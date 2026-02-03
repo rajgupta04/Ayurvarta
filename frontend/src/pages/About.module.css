@@ -1,0 +1,41 @@
+.about .hero {
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: white;
+}
+
+.about .hero h1, .about .hero p {
+    color: white;
+}
+
+.tradition, .vision, .team {
+  padding: 40px 20px;
+  background-color: var(--cream-bg);
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.traditionContent {
+  display: flex;
+  gap: 20px;
+}
+
+.teamMembers {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.teamMember {
+  text-align: center;
+}
+
+.teamMember img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}

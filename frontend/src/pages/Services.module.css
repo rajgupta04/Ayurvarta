@@ -1,0 +1,145 @@
+.services .hero {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.ctaButton {
+  background-color: var(--secondary-orange);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+.ctaButton:hover {
+  background-color: var(--secondary-orange);
+}
+
+.serviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px 20px;
+}
+
+.serviceCard {
+  background-color: var(--cream-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.learnMore {
+  color: var(--secondary-orange);
+  font-weight: bold;
+}
+
+.extraSection {
+  padding: 60px 20px;
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.extraSection:nth-of-type(even) {
+  background: var(--cream-bg);
+}
+
+.extraContent {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px;
+  align-items: center;
+}
+
+.textBlock h2 {
+  margin: 0 0 12px;
+  font-size: 34px;
+}
+
+.textBlock p {
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.points li {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondaryBtn {
+  background: #fff;
+  border: 1px solid var(--secondary-orange);
+  color: var(--secondary-orange);
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondaryBtn:hover:not(:disabled) {
+  background: var(--secondary-orange);
+  color: #fff;
+}
+
+.secondaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mediaBlock {
+  position: relative;
+}
+
+.illustration {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  display: block;
+}
+
+@media (max-width: 820px) {
+  .textBlock h2 {
+    font-size: 28px;
+  }
+  .extraSection {
+    padding: 48px 16px;
+  }
+}
+
+@media (max-width: 680px) {
+  .extraContent { grid-template-columns: 1fr; gap: 32px; }
+  .illustration { max-width: 100%; }
+  .actionsRow { flex-direction: column; }
+  .secondaryBtn, .ctaButton { width: 100%; text-align: center; }
+  .serviceList { padding: 32px 16px; }
+  .serviceCard { padding: 18px 16px; }
+  .textBlock h2 { font-size: 26px; }
+}
+
+@media (max-width: 480px) {
+  .services .hero { padding: 32px 16px; }
+  .ctaButton { width: 100%; font-size: 16px; padding: 14px 18px; }
+  .points li { font-size: 13px; }
+  .textBlock p { font-size: 14px; }
+}

@@ -1,0 +1,30 @@
+.wrap { padding: 16px; }
+.grid { display: grid; grid-template-columns: 1fr 340px; gap: 14px; align-items: start; }
+.card { background: var(--cream-bg); border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; padding: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+.title { margin: 0 0 10px; font-size: 20px; letter-spacing: 0.2px; }
+.category { margin-bottom: 16px; }
+.categoryHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.chip { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 10px 12px; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; }
+.chip:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(0,0,0,0.06); border-color: #e4e4e4; }
+.chip { cursor: pointer; }
+.chip.selected { border-color: var(--secondary-orange); box-shadow: 0 0 0 3px rgba(230,126,34,0.15); background: #fff8f1; }
+.btn { background: var(--secondary-orange); color: #fff; border: 0; border-radius: 10px; padding: 9px 12px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--secondary-orange); border: 1px solid var(--secondary-orange); }
+.btn.small { padding: 6px 9px; border-radius: 8px; font-size: 12px; }
+.badge { background: #fff; border: 1px solid #eee; padding: 4px 8px; border-radius: 999px; font-size: 12px; color: #555; }
+.searchRow { display:flex; gap:10px; align-items:center; margin-bottom: 12px; position: sticky; top: 0; background: var(--cream-bg); padding-bottom: 8px; z-index: 1; }
+.input { flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:10px; }
+.jsonBox { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; background: #0b1020; color: #d1e7ff; padding: 12px; border-radius: 10px; overflow: auto; max-height: 360px; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+.sticky { position: sticky; top: 12px; }
+
+/* Cards per food category */
+.catGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.catCard { background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 12px; box-shadow: 0 6px 14px rgba(0,0,0,0.04); }
+.catCard .categoryHeader { margin-bottom: 8px; }
+.catCard .items { grid-template-columns: repeat(2, 1fr); }
+
+.topBar { display:flex; align-items:center; justify-content:flex-end; gap: 8px; margin-bottom: 10px; }
+.link { color: var(--secondary-orange); font-weight: 600; text-decoration: none; }
+.link:hover { text-decoration: underline; }

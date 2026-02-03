@@ -1,0 +1,12 @@
+.form { max-width: 980px; margin: 0 auto; }
+.group { border: 1px solid rgba(61,90,70,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
+.group legend { font-weight: 800; color: var(--primary-green); padding: 0 6px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.col2 { grid-column: span 2; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; color: var(--deep-green); }
+input, select, textarea { border: 1px solid rgba(61,90,70,0.22); border-radius: 10px; padding: 10px; background: #fdfcf7; color: var(--text-dark); }
+.inline { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.actions { display: flex; justify-content: flex-end; }
+.saveBtn { background: var(--deep-green); color: #fff; border: none; padding: 12px 18px; border-radius: 10px; font-weight: 800; }
+
+@media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } .col2 { grid-column: span 1; } }

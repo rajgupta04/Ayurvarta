@@ -1,0 +1,266 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modalContent h2 {
+  margin: 0 0 10px 0;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.modalContent p {
+  margin: 0 0 25px 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section h3 {
+  margin: 0;
+  color: var(--primary-green);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.radioGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.radioLabel:hover {
+  border-color: var(--primary-green);
+  background: rgba(61, 90, 70, 0.05);
+}
+
+.radioLabel input[type="radio"]:checked + span {
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.checkboxGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.checkboxLabel:hover {
+  border-color: var(--primary-green);
+  background: rgba(61, 90, 70, 0.05);
+}
+
+.checkboxLabel input[type="checkbox"]:checked + span {
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.allergyInput {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.addBtn {
+  background: var(--secondary-orange);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addBtn:hover {
+  background: #d47a4a;
+}
+
+.allergiesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.allergyTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(61, 90, 70, 0.1);
+  color: var(--primary-green);
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: var(--secondary-orange);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeBtn:hover {
+  color: #d47a4a;
+}
+
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.submitBtn {
+  background: var(--primary-green);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background: var(--secondary-orange);
+}
+
+.cancelBtn {
+  background: white;
+  color: var(--text-dark);
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background: #f5f5f5;
+  border-color: var(--primary-green);
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 10px;
+  }
+  
+  .modalContent {
+    padding: 20px;
+  }
+  
+  .radioGroup,
+  .checkboxGroup {
+    grid-template-columns: 1fr;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+}

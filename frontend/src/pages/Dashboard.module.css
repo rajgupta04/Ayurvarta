@@ -1,0 +1,78 @@
+.page { padding: 18px 0 40px; }
+.dashboardContainer { background: #faf7ef; padding: 20px; border-radius: 16px; margin: 0 auto; max-width: 1400px; }
+.title { font-family: 'Playfair Display', serif; color: var(--primary-green); font-size: 22px; margin: 0; }
+.subtitle { color: var(--text-muted); margin-top: 4px; }
+.headerRow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+.profile { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-green); }
+.headerActions { display: flex; align-items: center; gap: 8px; }
+.doshaBadge { background: #fff; border: 1px solid rgba(61,90,70,0.2); padding: 6px 10px; border-radius: 999px; color: var(--deep-green); font-weight: 700; font-size: 12px; }
+.toolbar { display: flex; gap: 6px; }
+.toolBtn { background: var(--deep-green); color: #fff; border: none; padding: 6px 10px; border-radius: 10px; font-weight: 700; font-size: 12px; box-shadow: 0 2px 0 rgba(0,0,0,0.05); transform: translateY(0); transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease; }
+.toolBtn:hover { background: var(--secondary-orange); }
+.toolBtn.alt { background: var(--secondary-orange); }
+
+
+.grid { display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 14px; }
+.card { background: linear-gradient(180deg, #ffffff 0%, #faf7ef 100%); border: 1px solid rgba(61,90,70,0.12); border-radius: 14px; padding: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.05); transform: translateY(0); transition: transform 200ms ease, box-shadow 200ms ease; animation: cardFadeIn 420ms ease both; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+.wide { grid-column: span 2; }
+.chartTall { height: 280px; position: relative; }
+.list { margin: 8px 0 0; padding-left: 18px; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.kpi { background: #f7f5ec; border: 1px solid rgba(61,90,70,0.15); padding: 8px; border-radius: 8px; text-align: center; }
+.kpi span { display: block; font-size: 16px; font-weight: 800; color: var(--deep-green); }
+.kpi small { color: var(--text-dark); font-size: 12px; }
+.actions { display: flex; gap: 6px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+.cta { display: inline-block; padding: 6px 10px; font-weight: 800; color: #fff; background: var(--secondary-orange); border: 1px solid rgba(61,90,70,0.12); border-radius: 10px; box-shadow: 0 2px 0 rgba(0,0,0,0.05); transform: translateY(0); transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease; }
+.cta:hover { background: var(--primary-green); color: #fff; }
+.rows { display: grid; gap: 10px; margin-top: 6px; }
+
+.reminderPop { position: sticky; top: 8px; margin-bottom: 12px; background: var(--secondary-orange); color: #fff; padding: 8px 12px; display: inline-flex; gap: 8px; align-items: center; border-radius: 999px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); animation: dashSlideDown 500ms ease-out, dashPulse 2.5s ease-in-out infinite 1s; }
+.reminderPop:hover { background: var(--primary-green); }
+.reminderBtn { background: #ffffff; color: #2c3e50; border: none; padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+
+@keyframes dashSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dashPulse { 0%,100% { box-shadow: 0 8px 20px rgba(232,131,91,0.25); } 50% { box-shadow: 0 8px 24px rgba(61,90,70,0.28); } }
+
+@media (max-width: 960px) { 
+  .grid { grid-template-columns: repeat(2, 1fr); } 
+  .wide { grid-column: 1 / -1; } 
+}
+
+@media (max-width: 600px) { 
+  .page { padding: 12px 0 80px; }
+  .dashboardContainer { padding: 16px; margin: 0 8px; }
+  .grid { grid-template-columns: 1fr; }
+  .headerRow { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .profile { width: 100%; }
+  .headerActions { flex-wrap: wrap; gap: 8px; }
+  .title { font-size: 20px; }
+  .card { padding: 16px; }
+  .kpis { grid-template-columns: 1fr; gap: 12px; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .cta { text-align: center; padding: 12px 16px; }
+  .toolbar { flex-wrap: wrap; }
+}
+
+@media (max-width: 420px) {
+  .dashboardContainer { padding: 12px; margin: 0 4px; }
+  .card { padding: 12px; }
+  .title { font-size: 18px; }
+  .toolBtn, .cta { font-size: 14px; }
+  .avatar { width: 40px; height: 40px; }
+}
+
+/* Animations */
+@keyframes cardFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Staggered entrance for cards */
+.grid > .card { animation-delay: 40ms; }
+.grid > .card:nth-child(2) { animation-delay: 80ms; }
+.grid > .card:nth-child(3) { animation-delay: 120ms; }
+.grid > .card:nth-child(4) { animation-delay: 160ms; }
+.grid > .card:nth-child(5) { animation-delay: 200ms; }
+.grid > .card:nth-child(6) { animation-delay: 240ms; }
+.grid > .card:nth-child(7) { animation-delay: 280ms; }
+.grid > .card:nth-child(8) { animation-delay: 320ms; }
+.grid > .card:nth-child(9) { animation-delay: 360ms; }

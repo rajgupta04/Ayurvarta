@@ -1,0 +1,143 @@
+.footer {
+  background-color: var(--primary-green);
+  color: var(--cream-bg);
+  padding: 60px 20px 24px;
+}
+
+.footerContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerColumn {
+  min-width: 220px;
+}
+
+.logo {
+  width: 120px;
+  margin-bottom: 16px;
+}
+
+.footerColumn h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.footerColumn p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e7e7e7;
+}
+
+.footerColumn ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerColumn li {
+  margin-bottom: 10px;
+}
+
+.footerColumn a {
+  color: #e7e7e7;
+  text-decoration: none;
+}
+
+.footerColumn a:hover {
+  color: var(--accent-yellow);
+}
+
+.socialIcons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.socialIcons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.socialIcons a:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.newsletterForm input {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.newsletterForm button {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--secondary-orange);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.newsletterForm button:hover {
+  background: #d66a44;
+}
+
+.footerBottom {
+  margin-top: 32px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 16px;
+  color: #cfcfcf;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .footerContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .footer {
+    padding: 40px 16px 20px;
+  }
+  
+  .footerContainer {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  
+  .footerColumn {
+    min-width: auto;
+  }
+  
+  .logo {
+    width: 100px;
+    margin: 0 auto 12px;
+    display: block;
+  }
+  
+  .socialIcons {
+    justify-content: center;
+  }
+  
+  .newsletterForm {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}

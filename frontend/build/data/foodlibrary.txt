@@ -1,0 +1,71 @@
+ {
+  "grains": {
+    "can_eat": [
+      "Basmati rice",
+      "Cooked oats",
+      "Quinoa",
+      "Ribbon sandwich",
+      "Rolled sandwich",
+      "Vegetable burger",
+      "Mushroom and cheese sandwich (toasted)",
+      "Lemon cookies (in moderation)"
+    ]
+  },
+  "vegetables": {
+    "can_eat": [
+      "Baked vegetables",
+      "Carrots",
+      "Beets",
+      "Sweet potatoes",
+      "Asparagus",
+      "Zucchini"
+    ]
+
+  },
+  "fruits": {
+    "can_eat": [
+      "Avocado",
+      "Banana",
+      "Cooked apples",
+      "Soaked raisins",
+      "Sweet berries",
+      "Peaches"
+    ]
+  },
+  "proteins": {
+    "can_eat": [
+      "Kidney bean curry (Rajmah curry)",
+      "Kidney bean sandwich with cottage cheese",
+      "Mung dal",
+      "Red lentils",
+      "Tofu (in moderation, cooked)"
+    ]
+  },
+  "dairy": {
+    "can_eat": [
+      "Warm milk",
+      "Ghee",
+      "Cottage cheese",
+      "Lassi (diluted yogurt drink)",
+      "Paneer"
+    ]
+  },
+  "spices": {
+    "can_use": [
+      "Ginger",
+      "Cumin",
+      "Fennel",
+      "Cinnamon",
+      "Cardamom",
+      "Asafoetida (hing)",
+      "Himalayan salt"
+    ]
+  },
+  "beverages": {
+    "can_drink": [
+      "Warm water",
+      "Herbal teas (ginger, chamomile, fennel)",
+      "Warm spiced milk"
+    ]
+  }
+}

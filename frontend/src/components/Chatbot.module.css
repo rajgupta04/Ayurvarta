@@ -1,0 +1,185 @@
+.chatbotRoot {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2000;
+  font-family: inherit;
+}
+
+.launcher { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+
+.bubbleBtn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--secondary-orange), #ff9a73);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bubbleLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+}
+
+.bubbleBtn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,0.22); }
+
+/* Floating pill label */
+.bubbleLabel {
+  background: var(--deep-green);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  cursor: pointer;
+  user-select: none;
+  animation: labelBreathe 3.2s ease-in-out infinite;
+}
+
+.bubbleLabel::after {
+  content: '';
+  display: inline-block;
+  margin-left: 8px;
+  border-left: 6px solid #fff0; /* visual spacing stub */
+}
+
+@keyframes labelBreathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+.panel {
+  position: absolute;
+  right: 0;
+  bottom: 88px;
+  width: 460px;
+  max-height: 70vh;
+  background: #fff;
+  border: 1px solid rgba(61,90,70,0.2);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(247,245,236,0.98);
+  border-bottom: 1px solid rgba(61,90,70,0.2);
+}
+
+.headerLeft { display: flex; align-items: center; gap: 10px; }
+.miniLogoWrap {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.miniLogoImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-green);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+.miniLogoRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px dashed var(--accent-yellow);
+  animation: spin 8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.title { font-weight: 700; color: var(--primary-green); }
+.closeBtn { background: transparent; border: none; font-size: 18px; cursor: pointer; color: var(--text-dark); }
+
+.messages {
+  padding: 10px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 180px;
+}
+
+.msg {
+  padding: 10px 12px;
+  border-radius: 12px;
+  max-width: 85%;
+  line-height: 1.35;
+  font-size: 14px;
+}
+.user { align-self: flex-end; background: #f0f7f3; border: 1px solid rgba(61,90,70,0.25); }
+.bot { align-self: flex-start; background: #fff5f1; border: 1px solid rgba(232,131,91,0.35); }
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 12px 0 12px;
+}
+.chip {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(61,90,70,0.25);
+  background: #fff;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+.chip:hover { background: #f7f5ec; }
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 12px 12px;
+}
+.input {
+  flex: 1;
+  border: 1px solid rgba(61,90,70,0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+.sendBtn {
+  background: var(--deep-green);
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sendBtn:hover { background: var(--secondary-orange); }
+.sendBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.notice {
+  padding: 6px 12px;
+  color: #8a6d3b;
+  background: #fff8e1;
+  border-top: 1px solid rgba(61,90,70,0.2);
+  font-size: 12px;
+}
+
+@media (max-width: 520px) {
+  .panel { width: 95vw; right: -4px; max-height: 76vh; }
+}

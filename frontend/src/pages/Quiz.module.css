@@ -1,0 +1,218 @@
+.quiz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.quizCard {
+  background-color: var(--cream-bg);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.progressIndicator {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.doshaOptions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.doshaCard {
+    padding: 20px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 180px;
+}
+
+.doshaCard:hover {
+    border-color: var(--dosha-color);
+}
+
+.doshaCard img {
+    height: 120px;
+    margin-bottom: 15px;
+}
+
+.bodyTypeOptions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.bodyTypeCard {
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    width: 200px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.bodyTypeCard.selected {
+    border-color: var(--primary-green);
+    transform: scale(1.05);
+}
+
+/* alias for selection when used via composed classes */
+.selected { border-color: var(--primary-green); transform: scale(1.05); }
+
+.bodyTypeCard img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+
+.characteristicOptions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.characteristicCard {
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.characteristicCard.selected {
+    border-color: var(--secondary-orange);
+    box-shadow: 0 0 10px rgba(232, 131, 91, 0.5);
+}
+
+.characteristicCard ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+    color: var(--text-light);
+}
+
+.radioOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.radioLabel.selected {
+    border-color: var(--primary-green);
+}
+
+.radioInput {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radioLabel.selected .radioInput {
+    border-color: var(--primary-green);
+}
+
+.radioInput::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-green);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.2s;
+}
+
+.radioLabel.selected .radioInput::after {
+    transform: scale(1);
+}
+
+.questionContent {
+    margin-top: 20px;
+    min-height: 300px; /* Prevent layout shifts */
+}
+
+.doshaCard.selected {
+    border-color: var(--dosha-color);
+    transform: scale(1.05);
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.navButton {
+  background-color: var(--primary-green);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.navButton:hover {
+    background-color: var(--secondary-orange);
+}
+
+/* Mobile responsive breakpoints */
+@media (max-width: 768px) {
+  .quiz { min-height: 70vh; padding: 0 12px; }
+  .quizCard { width: 95%; padding: 24px 20px; }
+  .doshaOptions, .bodyTypeOptions { gap: 12px; flex-wrap: wrap; }
+  .doshaCard, .bodyTypeCard { width: 160px; padding: 16px; }
+  .doshaCard img { height: 100px; }
+  .bodyTypeCard img { height: 120px; }
+  .characteristicOptions { grid-template-columns: 1fr; gap: 12px; }
+  .navigation { flex-direction: column; gap: 12px; }
+  .navButton { width: 100%; padding: 14px 20px; }
+}
+
+@media (max-width: 560px) {
+  .quizCard { padding: 20px 16px; }
+  .doshaOptions, .bodyTypeOptions { flex-direction: column; align-items: center; }
+  .doshaCard, .bodyTypeCard { width: 200px; }
+  .radioOptions { gap: 12px; }
+  .radioLabel { padding: 12px; }
+  .questionContent { min-height: 250px; }
+}
+
+@media (max-width: 420px) {
+  .quiz { padding: 0 8px; }
+  .quizCard { padding: 16px 12px; }
+  .doshaCard, .bodyTypeCard { width: 180px; padding: 12px; }
+  .doshaCard img { height: 80px; }
+  .bodyTypeCard img { height: 100px; }
+  .progressIndicator { font-size: 12px; }
+}

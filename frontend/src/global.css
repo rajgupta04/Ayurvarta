@@ -1,0 +1,149 @@
+:root {
+  --primary-green: #3D5A46;
+  --secondary-orange: #E8835B;
+  --accent-yellow: #D3C397;
+  --accent-teal: #4B7D8A;
+  --cream-bg: #F7F5EC;
+  --text-dark: #333;
+  --text-light: #777;
+  /* New tokens used in Home */
+  --deep-green: #274536;
+  --text-color: #2b2b2b;
+  --text-muted: #666a6a;
+
+  /* Theme extensions */
+  --green-50: #eef3f0;
+  --green-100: #d7e2db;
+  --green-600: #2f4b3a;
+  --green-700: #21372a;
+  --orange-50: #fff2ec;
+  --orange-100: #ffe3d6;
+  --orange-600: #cf6f4c;
+  --orange-700: #b85f40;
+  --theme-gradient: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-orange) 100%);
+  /* Lotus cursor (emoji-based SVG) */
+  --lotus-cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text x='8' y='52' font-size='48'>🪷</text></svg>") 16 16, auto;
+}
+
+/* Universal box-sizing and mobile fixes */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: clamp(15px, 0.95vw + 11px, 18px);
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Root container fixes */
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Utility visibility helpers */
+.u-hide-mobile { display: initial; }
+
+@media (max-width: 600px) {
+  .u-hide-mobile { display: none !important; }
+}
+
+body {
+  font-family: 'Lora', serif;
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lora', serif;
+  color: var(--primary-green);
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-green);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+/* -------- Theme utilities (opt-in) -------- */
+.u-text-green { color: var(--primary-green) !important; }
+.u-text-orange { color: var(--secondary-orange) !important; }
+.u-bg-green { background: var(--primary-green) !important; color: #fff !important; }
+.u-bg-orange { background: var(--secondary-orange) !important; color: #fff !important; }
+.u-border-green { border-color: var(--primary-green) !important; }
+.u-border-orange { border-color: var(--secondary-orange) !important; }
+.u-chip { display:inline-block; padding:6px 10px; border-radius: 999px; border:1px solid rgba(0,0,0,0.08); font-weight:700; }
+.u-chip--green { background: var(--green-50); color: var(--primary-green); border-color: var(--green-100); }
+.u-chip--orange { background: var(--orange-50); color: var(--secondary-orange); border-color: var(--orange-100); }
+.u-gradient { background: var(--theme-gradient); color: #fff; }
+
+
+/* Cursor styles moved to public/index.html to reference %PUBLIC_URL% */
+
+/* Removed custom leaf cursor to restore default cursors */
+
+/* ---------- Animations & Reveals ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomInSoft {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.reveal { opacity: 0; will-change: transform, opacity; }
+.reveal.in-view { opacity: 1; }
+/* Safety fallback: if JS fails, reveal after short delay */
+@supports (animation: fadeUp) {
+  .reveal:not(.in-view) { animation: none; }
+}
+.no-intersection .reveal { opacity: 1 !important; }
+
+/* Mobile viewport and centering fixes */
+@media screen and (max-width: 768px) {
+  body {
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  
+  /* Prevent horizontal overflow */
+  .container, [class*="Container"], [class*="container"] {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Fix common layout issues */
+  img, svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Ensure proper touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Variants via data-reveal attribute */
+.reveal[data-reveal="fade-up"].in-view { animation: fadeUp 600ms ease forwards; }
+.reveal[data-reveal="fade-in"].in-view { animation: zoomInSoft 600ms ease forwards; }
+.reveal[data-reveal="scale-in"].in-view { animation: zoomInSoft 600ms ease forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+}

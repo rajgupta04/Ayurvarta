@@ -1,0 +1,45 @@
+.authPage { max-width: 960px; margin: 0 auto; padding: 64px 24px; }
+.wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.panel { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; box-shadow: 0 12px 28px rgba(0,0,0,0.08); padding: 20px; }
+.title { margin: 0 0 8px; font-size: 28px; }
+.sub { color: var(--text-muted); margin: 0 0 18px; }
+.seg { display: flex; background: #f7f5ec; border-radius: 999px; padding: 4px; width: fit-content; margin-bottom: 12px; gap: 4px; }
+.segBtn { padding: 8px 14px; border-radius: 999px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: var(--text-dark); }
+.active { background: #fff; border: 1px solid rgba(0,0,0,0.1); }
+.form { display: grid; gap: 10px; }
+.row { display: grid; gap: 6px; }
+.label { font-weight: 600; }
+.input { border: 1px solid rgba(0,0,0,0.15); border-radius: 10px; padding: 10px 12px; }
+.error { color: #a94442; font-size: 13px; }
+.success { 
+  color: #3c763d; 
+  background-color: #dff0d8; 
+  border: 1px solid #d6e9c6; 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  font-size: 13px; 
+  margin-bottom: 10px; 
+}
+.resetBtn { 
+  background: none; 
+  border: none; 
+  color: var(--deep-green); 
+  cursor: pointer; 
+  text-decoration: underline; 
+  font-size: 13px; 
+  padding: 4px 0; 
+}
+.resetBtn:hover { color: var(--secondary-orange); }
+.resetBtn:disabled, .primary:disabled { 
+  opacity: 0.6; 
+  cursor: not-allowed; 
+}
+.actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.primary { background: var(--deep-green); color: #fff; border: none; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
+.primary:hover { background: var(--secondary-orange); }
+.hint { color: var(--text-muted); font-size: 12px; }
+.aside { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; box-shadow: 0 12px 28px rgba(0,0,0,0.08); padding: 20px; }
+.aside h3 { margin-top: 0; }
+.providers { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.provider { border: 1px solid rgba(0,0,0,0.15); border-radius: 10px; padding: 8px 12px; background: #fff; cursor: pointer; }
+@media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }

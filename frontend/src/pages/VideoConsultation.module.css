@@ -1,0 +1,101 @@
+.page {
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.title { font-size: 22px; margin: 0; }
+
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.segment {
+  background: transparent;
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.segment + .segment { border-left: 1px solid rgba(0,0,0,0.08); }
+.active { background: var(--secondary-orange); color: #fff; }
+
+.input, .select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.uidRow {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.button {
+  background: var(--secondary-orange);
+  color: #fff;
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.button.alt { background: #3d5a46; }
+.button.ghost { background: transparent; color: var(--secondary-orange); border: 1px solid var(--secondary-orange); }
+
+/* Sidebar grid removed for single-page layout */
+
+
+
+.stageCard {
+  background: var(--cream-bg);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.videoStageSingle {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  min-height: 420px;
+}
+
+.videoBox {
+  background: #000;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  height: 420px;
+}
+
+.videoBox label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(61,90,70,0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.hint {
+  margin-top: 8px;
+  color: #666;
+  font-size: 13px;
+}
