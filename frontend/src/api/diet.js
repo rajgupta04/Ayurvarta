@@ -71,4 +71,7 @@ export function getDietLogs(limit = 30) {
 }
 
 export function deleteDietLog(logId) {
-  return apiRequest(`/diet-logs/${logId}`, {
+  return apiRequest(`/diet-logs/${logId}`, { method: 'DELETE' });
+}
+
+// Commit on 2026-02-05 
