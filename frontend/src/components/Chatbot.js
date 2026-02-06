@@ -136,3 +136,6 @@ const Chatbot = () => {
   );
 };
 
+export default Chatbot;
+
+// Commit on 2026-02-06 
