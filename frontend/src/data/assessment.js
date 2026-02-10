@@ -146,4 +146,7 @@ export const toTriCardOptions = (options, questionId) => {
 };
 
 // Helper to map 4-option Agni-style items to radio list (no images)
-export const toRadioOptions = (options) => opt
+export const toRadioOptions = (options) => options.map((label) => ({ label, value: label }));
+
+
+// Commit on 2026-02-10 
