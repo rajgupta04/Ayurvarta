@@ -13,4 +13,8 @@ export const mockServices = [
   {
     title: 'Wellness Programs',
     description: 'Customized programs to address your specific needs.',
-    icon: 'pr
+    icon: 'programs-icon.png'
+  }
+];
+
+// Commit on 2026-02-11 
