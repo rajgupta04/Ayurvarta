@@ -175,4 +175,8 @@ export default {
   signInWithGoogleIdToken,
   signOutUser,
   resetPassword,
-  getUserDocumen
+  getUserDocument,
+  getAccessToken,
+};
+
+// Commit on 2026-02-12 
