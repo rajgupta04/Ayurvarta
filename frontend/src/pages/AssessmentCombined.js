@@ -62,4 +62,9 @@ export default function AssessmentCombined() {
             <button className={styles.btn} onClick={finish}>Finish</button>
           )}
         </div>
-      </div
+      </div>
+    </section>
+  );
+}
+
+// Commit on 2026-02-14 
