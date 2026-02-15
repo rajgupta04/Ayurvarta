@@ -315,4 +315,9 @@ export default function Dashboard() {
         </div>
       </div>
       </div>
-  <AgniDailyModal open={agniOpen} onClose={() => setAgniOpen(false)} /
+  <AgniDailyModal open={agniOpen} onClose={() => setAgniOpen(false)} />
+    </section>
+  );
+}
+
+// Commit on 2026-02-15 
