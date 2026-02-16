@@ -185,4 +185,12 @@ export default function FoodLibrary({ embed = false }) {
         <div style={{gridColumn:'1 / -1'}}>
           {content}
         </div>
-      </div
+      </div>
+    </section>
+  );
+}
+
+// Commit on 2026-03-06 
+// Commit on 2026-03-06 
+// Commit on 2026-03-06 
+// Commit on 2026-02-16 
