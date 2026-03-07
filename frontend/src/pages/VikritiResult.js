@@ -26,4 +26,9 @@ export default function VikritiResult() {
       chips={chips}
       note="Next, evaluate your Agni (digestive fire)."
       nextHref="/assessment/agni"
-      nextText="Start 
+      nextText="Start Agni →"
+    />
+  );
+}
+
+// Commit on 2026-03-07 
