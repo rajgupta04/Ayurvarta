@@ -21,4 +21,7 @@ export function saveProfile(profile) {
 }
 
 export function clearProfile() {
-  try { localStorage.remove
+  try { localStorage.removeItem(KEY); } catch {}
+}
+
+// Commit on 2026-03-08 
