@@ -93,4 +93,9 @@ export default function Sidebar({ onSelect }) {
           <span className={styles.icon} aria-hidden>👤</span>
           <span className={styles.label}>Edit Profile</span>
         </Link>
-      </n
+      </nav>
+    </aside>
+  );
+}
+
+// Commit on 2026-03-14 
