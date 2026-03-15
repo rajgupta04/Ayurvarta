@@ -58,4 +58,9 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-expo
+export default AuthContext;
+
+// Commit on 2026-02-11 
+// Commit on 2026-02-11 
+// Commit on 2026-02-11 
+// Commit on 2026-03-15 
