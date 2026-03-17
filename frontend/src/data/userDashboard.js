@@ -45,4 +45,8 @@ export const sleepSeries = {
 export const records = [
   { date: '2025-09-10', note: 'Started coriander water in mornings' },
   { date: '2025-09-14', note: 'Reduced chili and sour foods' },
-  { date: '202
+  { date: '2025-09-20', note: 'Walking 30 min evenings' },
+];
+
+
+// Commit on 2026-03-17 
