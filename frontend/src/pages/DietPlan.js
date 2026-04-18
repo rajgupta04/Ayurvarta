@@ -18,6 +18,154 @@ import {
 
 const POLL_INTERVAL_MS = 2500;
 
+const toArray = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
+
+const unique = (items) => {
+  const seen = new Set();
+  const out = [];
+  items.forEach((item) => {
+    const key = String(item).trim().toLowerCase();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(String(item));
+  });
+  return out;
+};
+
+const normalizeDietPlan = (rawPlan, fallbackSummary) => {
+  if (!rawPlan || typeof rawPlan !== 'object') {
+    return {
+      summary: fallbackSummary || '',
+      doshaProfile: { dominant: 'Unknown', secondary: 'Unknown', agni: 'Unknown', goals: [] },
+      rasaFocus: { favor: [], reduce: [] },
+      gunaFocus: { favor: [], reduce: [] },
+      dailyMealPlan: { title: 'Daily Meal Plan', meals: [] },
+      recommendedFoods: { title: 'Recommended Foods', icon: '', items: [] },
+      foodsToAvoid: { title: 'Foods To Avoid', icon: '', items: [] },
+      lifestyleTips: { title: 'Lifestyle Tips', icon: '', items: [] },
+      seasonalTips: { title: 'Seasonal Tips', tips: [] },
+      hydration: { title: 'Hydration', points: [] },
+      spices: { title: 'Spices', favor: [], moderate: [], reduce: [] },
+    };
+  }
+
+  // If the response is already in UI schema, keep backward compatibility.
+  if (rawPlan.doshaProfile || rawPlan.dailyMealPlan || rawPlan.recommendedFoods) {
+    return {
+      summary: rawPlan.summary || fallbackSummary || '',
+      doshaProfile: rawPlan.doshaProfile || { dominant: 'Unknown', secondary: 'Unknown', agni: 'Unknown', goals: [] },
+      rasaFocus: rawPlan.rasaFocus || { favor: [], reduce: [] },
+      gunaFocus: rawPlan.gunaFocus || { favor: [], reduce: [] },
+      dailyMealPlan: rawPlan.dailyMealPlan || { title: 'Daily Meal Plan', meals: [] },
+      recommendedFoods: rawPlan.recommendedFoods || { title: 'Recommended Foods', icon: '', items: [] },
+      foodsToAvoid: rawPlan.foodsToAvoid || { title: 'Foods To Avoid', icon: '', items: [] },
+      lifestyleTips: rawPlan.lifestyleTips || { title: 'Lifestyle Tips', icon: '', items: [] },
+      seasonalTips: rawPlan.seasonalTips || { title: 'Seasonal Tips', tips: [] },
+      hydration: rawPlan.hydration || { title: 'Hydration', points: [] },
+      spices: rawPlan.spices || { title: 'Spices', favor: [], moderate: [], reduce: [] },
+    };
+  }
+
+  const userProfile = rawPlan.user_profile || {};
+  const foodGuidelines = rawPlan.food_guidelines || {};
+  const nutrientGuidelines = rawPlan.nutrient_guidelines || {};
+  const mealTiming = rawPlan.meal_timing || {};
+  const lifestyle = rawPlan.lifestyle_recommendations || {};
+  const flexibility = rawPlan.flexibility_options || {};
+  const doshaAlerts = toArray(rawPlan.dosha_alerts);
+
+  const dominant = String(userProfile.dosha || 'Unknown').replace(/-dominant$/i, '') || 'Unknown';
+  const secondary = toArray(userProfile.secondary_doshas).join(', ') || 'Unknown';
+
+  const categories = ['grains', 'vegetables', 'fruits', 'proteins', 'dairy'];
+  const canEat = unique(categories.flatMap((key) => toArray(foodGuidelines[key]?.can_eat)));
+  const avoid = unique([
+    ...categories.flatMap((key) => toArray(foodGuidelines[key]?.avoid)),
+    ...toArray(foodGuidelines.beverages?.avoid),
+    ...toArray(foodGuidelines.spices?.avoid),
+  ]);
+
+  const meals = [
+    { name: 'Breakfast', description: mealTiming.breakfast || '7-9 AM' },
+    { name: 'Lunch', description: mealTiming.lunch || '12-2 PM' },
+    { name: 'Snack', description: mealTiming.snack || '3-4 PM' },
+    { name: 'Dinner', description: mealTiming.dinner || '6-8 PM' },
+  ];
+  if (mealTiming.notes) {
+    meals.push({ name: 'Notes', description: mealTiming.notes });
+  }
+
+  const lifestyleItems = unique(
+    Object.entries(lifestyle)
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${key.replace(/_/g, ' ')}: ${value}`)
+  );
+
+  const hydrationPoints = unique([
+    nutrientGuidelines.hydration?.water_intake_liters
+      ? `Water intake: ${nutrientGuidelines.hydration.water_intake_liters} liters/day`
+      : '',
+    nutrientGuidelines.hydration?.notes || '',
+  ]);
+
+  const summary =
+    fallbackSummary ||
+    `Personalized plan prepared for ${dominant} profile with practical food and lifestyle guidance.`;
+
+  return {
+    summary,
+    doshaProfile: {
+      dominant,
+      secondary,
+      agni: 'Personalized',
+      goals: unique(doshaAlerts.map((d) => d?.alert).filter(Boolean)),
+    },
+    rasaFocus: {
+      favor: unique(toArray(foodGuidelines.spices?.can_use).slice(0, 12)),
+      reduce: unique(toArray(foodGuidelines.spices?.avoid).slice(0, 12)),
+    },
+    gunaFocus: {
+      favor: unique(canEat.slice(0, 10)),
+      reduce: unique(avoid.slice(0, 10)),
+    },
+    dailyMealPlan: {
+      title: 'Daily Meal Plan',
+      meals,
+    },
+    recommendedFoods: {
+      title: 'Recommended Foods',
+      icon: 'programs-icon.png',
+      items: canEat,
+    },
+    foodsToAvoid: {
+      title: 'Foods To Avoid',
+      icon: 'support-icon.png',
+      items: avoid,
+    },
+    lifestyleTips: {
+      title: 'Lifestyle Tips',
+      icon: 'support-icon.png',
+      items: lifestyleItems,
+    },
+    seasonalTips: {
+      title: 'Seasonal Tips',
+      tips: flexibility?.seasonal_adjustments
+        ? [{ season: 'Current Season', note: flexibility.seasonal_adjustments }]
+        : [],
+    },
+    hydration: {
+      title: 'Hydration',
+      points: hydrationPoints,
+    },
+    spices: {
+      title: 'Spices',
+      favor: unique(toArray(foodGuidelines.spices?.can_use)),
+      moderate: [],
+      reduce: unique(toArray(foodGuidelines.spices?.avoid)),
+    },
+  };
+};
+
 const DietPlan = () => {
   const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
   const [showPreferencesModal, setShowPreferencesModal] = useState(false);
@@ -364,7 +512,7 @@ const DietPlan = () => {
     );
   }
 
-  const dietData = apiDietPlan || {};
+  const dietData = useMemo(() => normalizeDietPlan(apiDietPlan, jobNotice), [apiDietPlan, jobNotice]);
   const {
     summary = '',
     doshaProfile = { dominant: 'Unknown', secondary: 'Unknown', agni: 'Unknown', goals: [] },
