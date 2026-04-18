@@ -28,10 +28,18 @@ const readSession = () => {
 };
 
 const writeSession = (session) => {
+  const currentRaw = localStorage.getItem(AUTH_STORAGE_KEY);
+  const nextRaw = session ? JSON.stringify(session) : null;
+
+  // Prevent auth event loops by only notifying when the stored session changes.
+  if (currentRaw === nextRaw) {
+    return;
+  }
+
   if (!session) {
     localStorage.removeItem(AUTH_STORAGE_KEY);
   } else {
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+    localStorage.setItem(AUTH_STORAGE_KEY, nextRaw);
   }
   window.dispatchEvent(new CustomEvent(AUTH_EVENT_NAME));
 };

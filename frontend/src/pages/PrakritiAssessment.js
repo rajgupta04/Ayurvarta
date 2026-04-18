@@ -5,13 +5,29 @@ import styles from './Assessment.module.css';
 import { PRAKRITI_QUESTIONS, toTriCardOptions } from '../data/assessment';
 import TriCardQuestion from '../components/TriCardQuestion';
 import quizStyles from './Quiz.module.css';
-import { saveAssessmentResult } from '../utils/assessmentStorage';
+import { saveAssessmentResult, saveAssessmentResultInDb } from '../utils/assessmentStorage';
 
 export default function PrakritiAssessment() {
   const [answers, setAnswers] = useState({});
   const [idx, setIdx] = useState(0);
+  const [autoAdvancing, setAutoAdvancing] = useState(false);
   const nav = useNavigate();
-  const onChange = (id, val) => setAnswers(a => ({ ...a, [id]: val }));
+  const onChange = (id, val) => {
+    setAnswers((a) => ({ ...a, [id]: val }));
+
+    if (idx < PRAKRITI_QUESTIONS.length - 1) {
+      setAutoAdvancing(true);
+      window.setTimeout(() => {
+        setIdx((i) => Math.min(i + 1, PRAKRITI_QUESTIONS.length - 1));
+        setAutoAdvancing(false);
+      }, 220);
+    }
+  };
+
+  const q = PRAKRITI_QUESTIONS[idx];
+  const options = toTriCardOptions(q.options, q.id);
+  const prevQuestion = idx > 0 ? PRAKRITI_QUESTIONS[idx - 1] : null;
+  const prevChoice = prevQuestion ? answers[prevQuestion.id] : null;
 
   return (
     <section className={styles.page} data-reveal>
@@ -19,11 +35,7 @@ export default function PrakritiAssessment() {
       <p className={styles.subtitle}>Discover your inherent constitution (Vata, Pitta, Kapha blend).</p>
       <div className={quizStyles.quiz}>
         <div className={quizStyles.quizCard}>
-          {(() => {
-          const q = PRAKRITI_QUESTIONS[idx];
-          const options = toTriCardOptions(q.options, q.id);
-          return (
-            <>
+          <div key={q.id} className={quizStyles.questionSwap}>
               <p className={quizStyles.progressIndicator}>
                 QUESTION {idx + 1} OF {PRAKRITI_QUESTIONS.length}
               </p>
@@ -36,17 +48,21 @@ export default function PrakritiAssessment() {
                   circular={idx >= 1} /* questions 2-7 (index 1 onward) */
                 />
               </div>
+              {autoAdvancing ? <p className={quizStyles.selectedNote}>Nice choice. Moving to next question...</p> : null}
+              {prevChoice ? <p className={quizStyles.previousChoice}>Previous: {prevChoice}</p> : null}
               <div className={quizStyles.navigation}>
                 {idx > 0 && (
                   <button className={quizStyles.navButton} onClick={() => setIdx(i=>i-1)}>Back</button>
                 )}
                 {idx < PRAKRITI_QUESTIONS.length - 1 ? (
-                  <button className={quizStyles.navButton} disabled={!answers[q.id]} onClick={() => setIdx(i=>i+1)}>Continue</button>
+                  <button className={quizStyles.navButton} disabled>
+                    {autoAdvancing ? 'Auto-advancing...' : 'Select an option'}
+                  </button>
                 ) : (
           <button
                     className={quizStyles.navButton}
                     disabled={!answers[q.id]}
-                    onClick={() => {
+                    onClick={async () => {
                       const counts = { Vata: 0, Pitta: 0, Kapha: 0 };
                       PRAKRITI_QUESTIONS.forEach(qq => {
                         const opt = answers[qq.id];
@@ -59,7 +75,8 @@ export default function PrakritiAssessment() {
             // eslint-disable-next-line no-console
             console.log('[Prakriti] Scores:', counts);
                       const params = new URLSearchParams({ v: counts.Vata, p: counts.Pitta, k: counts.Kapha });
-                      saveAssessmentResult('prakriti', { scores: counts });
+                      const entry = saveAssessmentResult('prakriti', { scores: counts });
+                      await saveAssessmentResultInDb('prakriti', entry);
                       nav(`/assessment/prakriti/result?${params.toString()}`);
                     }}
                   >
@@ -67,9 +84,7 @@ export default function PrakritiAssessment() {
                   </button>
                 )}
               </div>
-            </>
-          );
-        })()}
+          </div>
         </div>
       </div>
     </section>

@@ -161,6 +161,34 @@
     min-height: 300px; /* Prevent layout shifts */
 }
 
+.questionSwap {
+    animation: questionFadeIn 240ms ease;
+}
+
+@keyframes questionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.selectedNote {
+    margin-top: 14px;
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.previousChoice {
+    margin-top: 14px;
+    color: var(--text-light);
+    font-size: 14px;
+    text-align: left;
+}
+
 .doshaCard.selected {
     border-color: var(--dosha-color);
     transform: scale(1.05);

@@ -1,4 +1,6 @@
 // Commit on 2026-03-06
+import { saveAssessmentToDb } from '../api/assessment';
+
 const KEY = 'assessmentHistory';
 
 export function getHistory() {
@@ -16,6 +18,14 @@ export function saveAssessmentResult(type, payload) {
   hist[type] = [entry, ...hist[type]].slice(0, 20);
   try { sessionStorage.setItem(KEY, JSON.stringify(hist)); } catch {}
   return entry;
+}
+
+export async function saveAssessmentResultInDb(type, entry) {
+  try {
+    return await saveAssessmentToDb(type, entry);
+  } catch {
+    return null;
+  }
 }
 
 export function clearAssessmentHistory() {
