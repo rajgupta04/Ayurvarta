@@ -1,6 +1,11 @@
 // Commit on 2026-02-16
 const AUTH_STORAGE_KEY = 'ayurvarta_auth_session';
 const AUTH_EVENT_NAME = 'ayurvarta-auth-changed';
+const AUTH_ME_CACHE_TTL_MS = 30_000;
+
+let authMeInFlight = null;
+let lastAuthMeAt = 0;
+let lastAuthMeToken = null;
 
 const API_BASE = (
   process.env.REACT_APP_API_BASE_URL ||
@@ -159,7 +164,21 @@ export const getUserDocument = async () => {
   const session = readSession();
   if (!session?.token) return null;
 
-  try {
+  const now = Date.now();
+  if (
+    session.user &&
+    session.token === lastAuthMeToken &&
+    now - lastAuthMeAt < AUTH_ME_CACHE_TTL_MS
+  ) {
+    return session.user;
+  }
+
+  if (authMeInFlight) {
+    return authMeInFlight;
+  }
+
+  authMeInFlight = (async () => {
+    try {
     const data = await request('/auth/me', {
       method: 'GET',
       headers: {
@@ -168,12 +187,21 @@ export const getUserDocument = async () => {
     });
 
     const nextSession = { token: session.token, user: data.user };
+    lastAuthMeAt = Date.now();
+    lastAuthMeToken = session.token;
     writeSession(nextSession);
     return data.user;
-  } catch {
+    } catch {
     writeSession(null);
+      lastAuthMeAt = 0;
+      lastAuthMeToken = null;
     return null;
-  }
+    } finally {
+      authMeInFlight = null;
+    }
+  })();
+
+  return authMeInFlight;
 };
 
 const authApi = {

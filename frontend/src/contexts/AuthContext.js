@@ -1,5 +1,5 @@
 // Commit on 2026-02-15
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { 
   onAuthStateChangedListener, 
   getUserDocument 
@@ -25,17 +25,26 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userDocument, setUserDocument] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const hydratedUidRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
       if (user) {
         setCurrentUser(user);
 
-        const userDoc = await getUserDocument(user);
+        // Ignore repeated auth events for the same user; hydrate only once.
+        if (hydratedUidRef.current === user.uid) {
+          setIsLoading(false);
+          return;
+        }
+
+        const userDoc = await getUserDocument();
         setUserDocument(userDoc);
+        hydratedUidRef.current = user.uid;
       } else {
         setCurrentUser(null);
         setUserDocument(null);
+        hydratedUidRef.current = null;
       }
       setIsLoading(false);
     });
