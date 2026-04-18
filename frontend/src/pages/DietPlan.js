@@ -5,7 +5,6 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 import styles from './DietPlan.module.css';
-import { mockDietPlan } from '../data/mockDietPlan';
 import { getHistory, clearAssessmentHistory } from '../utils/assessmentStorage';
 import DietPreferencesModal from '../components/DietPreferencesModal';
 import {
@@ -172,6 +171,9 @@ const DietPlan = () => {
   };
 
   const buildDietPayload = (preferences) => ({
+    // Vikriti answers are currently captured as Sama/Vishama/Tikshna/Manda.
+    // Map them to vata/pitta/kapha signals for backend compatibility.
+    // If direct dosha keys exist, use them first.
     profile: {
       prakriti: {
         vata: history.prakriti[0]?.scores?.Vata || 0,
@@ -179,9 +181,9 @@ const DietPlan = () => {
         kapha: history.prakriti[0]?.scores?.Kapha || 0,
       },
       vikriti: {
-        vata: history.vikriti[0]?.scores?.Vata || 0,
-        pitta: history.vikriti[0]?.scores?.Pitta || 0,
-        kapha: history.vikriti[0]?.scores?.Kapha || 0,
+        vata: history.vikriti[0]?.scores?.Vata ?? history.vikriti[0]?.scores?.Vishama ?? 0,
+        pitta: history.vikriti[0]?.scores?.Pitta ?? history.vikriti[0]?.scores?.Tikshna ?? 0,
+        kapha: history.vikriti[0]?.scores?.Kapha ?? history.vikriti[0]?.scores?.Manda ?? 0,
       },
     },
     health: {
@@ -362,7 +364,7 @@ const DietPlan = () => {
     );
   }
 
-  const dietData = apiDietPlan || mockDietPlan;
+  const dietData = apiDietPlan || {};
   const {
     summary = '',
     doshaProfile = { dominant: 'Unknown', secondary: 'Unknown', agni: 'Unknown', goals: [] },

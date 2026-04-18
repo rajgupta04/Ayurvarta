@@ -2,7 +2,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Dashboard.module.css';
-import { userProfile, currentDosha, currentDietPlan, dailyStats, nutrientsSuggested, improvementSeries, sleepSeries, records } from '../data/userDashboard';
 import { useAuth } from '../contexts/AuthContext';
 import { Line, Doughnut } from 'react-chartjs-2';
 import html2canvas from 'html2canvas';
@@ -46,7 +45,113 @@ export default function Dashboard() {
   const [showReminder, setShowReminder] = useState(true);
   const savedFood = useMemo(() => loadSavedFood(), []);
   const { userDocument, currentUser } = useAuth();
-  const displayName = (userDocument?.displayName || currentUser?.displayName || userProfile.name || currentUser?.email?.split('@')[0] || 'User');
+  const displayName = (userDocument?.displayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User');
+  const avatarSrc = '/images/logo.png';
+
+  const prakritiScores = history?.prakriti?.[0]?.scores || {};
+  const agniScores = history?.agni?.[0]?.scores || {};
+  const doshaBlend = {
+    Vata: Number(prakritiScores.Vata || 0),
+    Pitta: Number(prakritiScores.Pitta || 0),
+    Kapha: Number(prakritiScores.Kapha || 0),
+  };
+
+  const dominantDosha = useMemo(() => {
+    const entries = Object.entries(doshaBlend);
+    if (!entries.some(([, value]) => value > 0)) return 'Unknown';
+    return entries.sort((a, b) => b[1] - a[1])[0][0];
+  }, [doshaBlend]);
+
+  const agniTrend = (history?.agni || []).slice(0, 7).reverse();
+  const lineData = {
+    labels: agniTrend.map((entry) => new Date(entry.ts).toLocaleDateString()),
+    datasets: [
+      {
+        label: 'Vishama',
+        data: agniTrend.map((entry) => entry?.scores?.Vishama || 0),
+        borderColor: '#7f8c8d',
+        backgroundColor: 'rgba(127,140,141,0.15)',
+        tension: 0.3,
+        fill: true,
+      },
+      {
+        label: 'Tikshna',
+        data: agniTrend.map((entry) => entry?.scores?.Tikshna || 0),
+        borderColor: '#e67e22',
+        backgroundColor: 'rgba(230,126,34,0.15)',
+        tension: 0.3,
+        fill: true,
+      },
+      {
+        label: 'Manda',
+        data: agniTrend.map((entry) => entry?.scores?.Manda || 0),
+        borderColor: '#3d5a46',
+        backgroundColor: 'rgba(61,90,70,0.15)',
+        tension: 0.3,
+        fill: true,
+      },
+    ],
+  };
+
+  const sleepHours = Number(saved?.sleepDuration || 0);
+  const sleepData = {
+    labels: sleepHours > 0 ? ['Current'] : [],
+    datasets: [
+      {
+        label: 'Sleep Hours',
+        data: sleepHours > 0 ? [sleepHours] : [],
+        borderColor: '#3d5a46',
+        backgroundColor: 'rgba(61,90,70,0.15)',
+        tension: 0.3,
+      },
+    ],
+  };
+
+  const doshaData = {
+    labels: ['Vata', 'Pitta', 'Kapha'],
+    datasets: [{
+      data: [doshaBlend.Vata, doshaBlend.Pitta, doshaBlend.Kapha],
+      backgroundColor: ['#7f8c8d', '#e67e22', '#16a085'],
+      borderWidth: 0,
+    }],
+  };
+
+  const dailyStats = {
+    sleepHours: saved?.sleepDuration || '—',
+    bowelMovement: saved?.bowelMovementType || saved?.bowelMovementFrequency || '—',
+    waterIntakeL: saved?.waterIntake || '—',
+  };
+
+  const nutrientsSuggested = useMemo(() => {
+    const suggested = [];
+    if (dominantDosha === 'Vata') {
+      suggested.push({ name: 'Healthy fats', reason: 'Supports grounding and lubrication for Vata dominance' });
+    }
+    if (dominantDosha === 'Pitta') {
+      suggested.push({ name: 'Cooling minerals', reason: 'Supports heat balance for Pitta dominance' });
+    }
+    if (dominantDosha === 'Kapha') {
+      suggested.push({ name: 'Digestive spices', reason: 'Supports metabolism and lightness for Kapha dominance' });
+    }
+    if ((agniScores.Manda || 0) > Math.max(agniScores.Tikshna || 0, agniScores.Vishama || 0)) {
+      suggested.push({ name: 'Fiber + warm hydration', reason: 'Supports sluggish digestive patterns (Manda Agni)' });
+    }
+    return suggested;
+  }, [dominantDosha, agniScores]);
+
+  const records = useMemo(() => {
+    const entries = [];
+    (history?.prakriti || []).slice(0, 2).forEach((item) => {
+      entries.push({ date: new Date(item.ts).toLocaleDateString(), note: 'Completed Prakriti assessment' });
+    });
+    (history?.vikriti || []).slice(0, 2).forEach((item) => {
+      entries.push({ date: new Date(item.ts).toLocaleDateString(), note: 'Completed Vikriti assessment' });
+    });
+    (history?.agni || []).slice(0, 2).forEach((item) => {
+      entries.push({ date: new Date(item.ts).toLocaleDateString(), note: 'Completed Agni assessment' });
+    });
+    return entries.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+  }, [history]);
 
   const handleDownloadPNG = async () => {
     if (!printRef.current) return;
@@ -77,31 +182,6 @@ export default function Dashboard() {
     pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight, undefined, 'FAST');
     pdf.save('dashboard.pdf');
   };
-  const lineData = {
-    labels: improvementSeries.labels,
-    datasets: [
-      { label: 'Energy', data: improvementSeries.energy, borderColor: '#e67e22', backgroundColor: 'rgba(230,126,34,0.15)', tension: 0.3, fill: true },
-      { label: 'Digestion', data: improvementSeries.digestion, borderColor: '#3d5a46', backgroundColor: 'rgba(61,90,70,0.15)', tension: 0.3, fill: true },
-      { label: 'Mood', data: improvementSeries.mood, borderColor: '#b7791f', backgroundColor: 'rgba(183,121,31,0.15)', tension: 0.3, fill: true },
-    ]
-  };
-
-  const sleepData = {
-    labels: sleepSeries.labels,
-    datasets: [
-      { label: 'Sleep Hours', data: sleepSeries.hours, borderColor: '#3d5a46', backgroundColor: 'rgba(61,90,70,0.15)', tension: 0.3 }
-    ]
-  };
-
-  const doshaData = {
-    labels: ['Vata', 'Pitta', 'Kapha'],
-    datasets: [{
-      data: [currentDosha.blend.Vata, currentDosha.blend.Pitta, currentDosha.blend.Kapha],
-      backgroundColor: ['#7f8c8d', '#e67e22', '#16a085'],
-      borderWidth: 0
-    }]
-  };
-
   const [panel, setPanel] = useState('overview');
   return (
     <section className={styles.page} data-reveal ref={printRef}>
@@ -111,14 +191,14 @@ export default function Dashboard() {
           <div>
       <div className={styles.headerRow}>
         <div className={styles.profile}>
-          <img className={styles.avatar} src={userProfile.avatar} alt={userProfile.name} />
+          <img className={styles.avatar} src={avatarSrc} alt="Profile" />
           <div>
             <h1 className={styles.title}>Welcome back, {displayName.split(' ')[0]}</h1>
             <p className={styles.subtitle}>Your current snapshot and progress • <em>{saved?.role || 'as Dietitian'}</em></p>
           </div>
         </div>
         <div className={styles.headerActions}>
-          <div className={styles.doshaBadge}>Dominant: <strong>{currentDosha.dominant}</strong></div>
+          <div className={styles.doshaBadge}>Dominant: <strong>{dominantDosha}</strong></div>
           <div className={styles.toolbar}>
     <button className={styles.toolBtn} onClick={() => setAgniOpen(true)}>Daily Agni</button>
             <button className={styles.toolBtn} onClick={handleDownloadPNG}>Download PNG</button>
@@ -148,7 +228,7 @@ export default function Dashboard() {
       ) : (
       <div className={styles.grid}> 
           <div className={`${styles.card} ${styles.wide}`}>
-            <h3>Improvement Trends</h3>
+              <h3>Agni Trends</h3>
             <div className={styles.chartTall}>
               <Line data={lineData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { suggestedMin: 0, suggestedMax: 100 } } }} />
             </div>
@@ -264,12 +344,8 @@ export default function Dashboard() {
 
         <div className={styles.card}>
           <h3>Current Diet Plan</h3>
-          <p><strong>{currentDietPlan.title}</strong></p>
-          <ul className={styles.list}>
-            <li>Next: {currentDietPlan.nextMeal}</li>
-            <li>Hydration: {currentDietPlan.hydration}</li>
-          </ul>
-          <a className={styles.cta} href="/diet-plan">View plan →</a>
+          <p>No local placeholder plan is shown. Generate your latest plan from the backend.</p>
+          <a className={styles.cta} href="/diet-plan">Open Diet Plan →</a>
         </div>
 
         <div className={styles.card}>
@@ -286,6 +362,7 @@ export default function Dashboard() {
             <h3>Ayurveda Alignment</h3>
             <ul className={styles.list}>
               <li>Dominant Dosha: <strong>{saved.dominantDosha || currentDosha.dominant}</strong></li>
+              <li>Dominant Dosha: <strong>{saved.dominantDosha || dominantDosha}</strong></li>
               {saved.doshaImbalance?.length ? <li>Imbalance: {saved.doshaImbalance.join(', ')}</li> : null}
               {saved.recommendedDiet?.length ? <li>Recommended: {saved.recommendedDiet.join(', ')}</li> : null}
               {saved.restrictedDiet?.length ? <li>Restricted: {saved.restrictedDiet.join(', ')}</li> : null}
@@ -295,20 +372,28 @@ export default function Dashboard() {
 
         <div className={styles.card}>
           <h3>Nutrients Suggested</h3>
-          <ul className={styles.list}>
-            {nutrientsSuggested.map(n => (
-              <li key={n.name}><strong>{n.name}</strong> — {n.reason}</li>
-            ))}
-          </ul>
+          {nutrientsSuggested.length ? (
+            <ul className={styles.list}>
+              {nutrientsSuggested.map(n => (
+                <li key={n.name}><strong>{n.name}</strong> — {n.reason}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>Complete assessments to get data-driven nutrient suggestions.</p>
+          )}
         </div>
 
         <div className={styles.card}>
           <h3>Records & Notes</h3>
-          <ul className={styles.list}>
-            {records.map(r => (
-              <li key={r.date}><strong>{r.date}</strong> — {r.note}</li>
-            ))}
-          </ul>
+          {records.length ? (
+            <ul className={styles.list}>
+              {records.map((r, idx) => (
+                <li key={`${r.date}-${idx}`}><strong>{r.date}</strong> — {r.note}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No assessment records yet.</p>
+          )}
         </div>
   </div>
   )}
