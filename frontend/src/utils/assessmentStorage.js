@@ -1,4 +1,4 @@
-﻿// Commit on 2026-03-06
+// Commit on 2026-03-06
 const KEY = 'assessmentHistory';
 
 export function getHistory() {

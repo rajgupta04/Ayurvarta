@@ -94,9 +94,9 @@ export default function VideoConsultation() {
       const channelName = channel.trim();
       if (!channelName) return;
       const desiredUid = uid ? Number(uid) : null;
-      const { appId: finalAppId, token: finalToken, uid: serverUid } = await fetchTokenIfNeeded(appId, channelName, desiredUid, role);
+      const { appId: finalAppId, token: finalToken } = await fetchTokenIfNeeded(appId, channelName, desiredUid, role);
       const client = clientRef.current;
-      const actualUid = await client.join(finalAppId, channelName, finalToken || null, desiredUid || null);
+      await client.join(finalAppId, channelName, finalToken || null, desiredUid || null);
       // Create mic if needed and reuse existing camera preview track
       let micTrack = localTracksRef.current.mic;
       if (!micTrack) {

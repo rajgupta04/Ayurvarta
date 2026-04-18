@@ -49,7 +49,7 @@ const Services = () => {
       <section className={styles.extraSection} id="food-analysis">
         <div className={styles.extraContent}>
           <div className={styles.mediaBlock}>
-            <img src="/images/food_analysis.png" alt="Image Food Analysis" className={styles.illustration} />
+            <img src="/images/food_analysis.png" alt="Food analysis preview" className={styles.illustration} />
           </div>
           <div className={styles.textBlock}>
             <h2>Image-based Food Analysis (Beta)</h2>

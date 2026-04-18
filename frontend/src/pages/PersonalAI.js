@@ -45,7 +45,6 @@ export default function PersonalAI() {
 
   const timeline = (arr) => arr?.slice(0, 8).reverse();
   const vikritiSeries = timeline(history.vikriti || []);
-  const agniSeries = timeline(history.agni || []);
   const lineData = {
     labels: vikritiSeries?.map(v => new Date(v.ts).toLocaleDateString()) || [],
     datasets: [

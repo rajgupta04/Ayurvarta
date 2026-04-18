@@ -168,7 +168,7 @@ export const getUserDocument = async () => {
   }
 };
 
-export default {
+const authApi = {
   onAuthStateChangedListener,
   createAuthUserWithEmailAndPassword,
   signInAuthUserWithEmailAndPassword,
@@ -178,6 +178,8 @@ export default {
   getUserDocument,
   getAccessToken,
 };
+
+export default authApi;
 
 // Commit on 2026-02-12 
 // Commit on 2026-02-12 

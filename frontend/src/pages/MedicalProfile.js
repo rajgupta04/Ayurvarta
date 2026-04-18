@@ -42,13 +42,6 @@ export default function MedicalProfile() {
 
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
-  const updateArray = (field, value) => setForm(f => {
-    const arr = Array.isArray(f[field]) ? [...f[field]] : [];
-    const idx = arr.indexOf(value);
-    if (idx >= 0) arr.splice(idx, 1); else arr.push(value);
-    return { ...f,  [field]: arr };
-  });
-
   const submit = (e) => {
     e.preventDefault();
     const ok = saveProfile(form);
