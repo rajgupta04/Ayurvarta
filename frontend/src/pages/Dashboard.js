@@ -48,13 +48,13 @@ export default function Dashboard() {
   const displayName = (userDocument?.displayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User');
   const avatarSrc = '/images/logo.png';
 
-  const prakritiScores = history?.prakriti?.[0]?.scores || {};
-  const agniScores = history?.agni?.[0]?.scores || {};
-  const doshaBlend = {
+  const prakritiScores = useMemo(() => history?.prakriti?.[0]?.scores || {}, [history]);
+  const agniScores = useMemo(() => history?.agni?.[0]?.scores || {}, [history]);
+  const doshaBlend = useMemo(() => ({
     Vata: Number(prakritiScores.Vata || 0),
     Pitta: Number(prakritiScores.Pitta || 0),
     Kapha: Number(prakritiScores.Kapha || 0),
-  };
+  }), [prakritiScores]);
 
   const dominantDosha = useMemo(() => {
     const entries = Object.entries(doshaBlend);
@@ -361,7 +361,6 @@ export default function Dashboard() {
           <div className={styles.card}>
             <h3>Ayurveda Alignment</h3>
             <ul className={styles.list}>
-              <li>Dominant Dosha: <strong>{saved.dominantDosha || currentDosha.dominant}</strong></li>
               <li>Dominant Dosha: <strong>{saved.dominantDosha || dominantDosha}</strong></li>
               {saved.doshaImbalance?.length ? <li>Imbalance: {saved.doshaImbalance.join(', ')}</li> : null}
               {saved.recommendedDiet?.length ? <li>Recommended: {saved.recommendedDiet.join(', ')}</li> : null}
