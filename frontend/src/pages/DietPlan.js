@@ -512,7 +512,7 @@ const DietPlan = () => {
     );
   }
 
-  const dietData = useMemo(() => normalizeDietPlan(apiDietPlan, jobNotice), [apiDietPlan, jobNotice]);
+  const dietData = normalizeDietPlan(apiDietPlan, jobNotice);
   const {
     summary = '',
     doshaProfile = { dominant: 'Unknown', secondary: 'Unknown', agni: 'Unknown', goals: [] },
