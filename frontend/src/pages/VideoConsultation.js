@@ -185,4 +185,7 @@ function Panel({ appId, setAppId, channel, setChannel, token, setToken, uid, set
       </div>
       <div className={styles.hint}>
         Tip: Choose role above. Leave token blank to fetch from backend. Configure backend .env with AGORA_APP_ID and AGORA_APP_CERT.
-      <
+      </div>
+    </div>
+  );
+}

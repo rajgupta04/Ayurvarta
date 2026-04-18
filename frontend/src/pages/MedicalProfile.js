@@ -130,4 +130,7 @@ export default function MedicalProfile() {
         <div className={styles.actions}>
           <button type="submit" className={styles.saveBtn}>Save Profile</button>
         </div>
-      </form
+      </form>
+    </section>
+  );
+}

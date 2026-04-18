@@ -88,4 +88,7 @@ export default function AgniDailyModal({ open, onClose }) {
           <button className={`${styles.btn} ${styles.secondary}`} onClick={onClose}>Cancel</button>
           <button className={styles.btn} disabled={!allAnswered} onClick={submit}>Save Check-in</button>
         </div>
-      <
+      </div>
+    </div>
+  );
+}

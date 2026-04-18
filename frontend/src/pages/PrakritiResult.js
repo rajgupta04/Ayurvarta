@@ -16,4 +16,7 @@ export default function PrakritiResult() {
       chips={chips}
       note="Proceed to Vikriti to assess your current imbalances."
       nextHref="/assessment/vikriti"
-      nextText="Start Vik
+      nextText="Start Vikriti Assessment"
+    />
+  );
+}

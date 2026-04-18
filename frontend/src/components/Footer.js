@@ -55,4 +55,9 @@ const Footer = () => {
 
       <div className={styles.footerBottom}>
         <p>&copy; {new Date().getFullYear()} AyurVarta. Built by <strong>Gang Glitch</strong>.All Rights Reserved. </p>
-      </div
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

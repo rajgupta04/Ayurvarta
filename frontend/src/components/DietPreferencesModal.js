@@ -154,4 +154,4 @@ const DietPreferencesModal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export defaul
+export default DietPreferencesModal;

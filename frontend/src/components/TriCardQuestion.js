@@ -22,4 +22,7 @@ export default function TriCardQuestion({ title, options, selected, onSelect, ci
     <h4 className={styles.cardTitle}>{opt.label}</h4>
           </div>
         ))}
-      <
+      </div>
+    </div>
+  );
+}

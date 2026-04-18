@@ -55,4 +55,7 @@ export default function Assessment() {
             <p>Complete flow: Prakriti → Vikriti → Agni with simple stepper.</p>
           </div>
         </div>
-      </div
+      </div>
+    </section>
+  );
+}

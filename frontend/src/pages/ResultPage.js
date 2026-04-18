@@ -19,4 +19,7 @@ export default function ResultPage({ title, chips = [], note, nextHref, nextText
             <a href={nextHref} className={`${styles.btn} ${styles.alt}`}>{nextText || 'Continue →'}</a>
           </div>
         )}
-      </div
+      </div>
+    </section>
+  );
+}

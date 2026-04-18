@@ -1,4 +1,4 @@
-// Commit on 2026-03-06
+﻿// Commit on 2026-03-06
 const KEY = 'assessmentHistory';
 
 export function getHistory() {
@@ -20,4 +20,6 @@ export function saveAssessmentResult(type, payload) {
 
 export function clearAssessmentHistory() {
   try {
-    sessionStorage.removeIt
+    sessionStorage.removeItem(KEY);
+  } catch {}
+}

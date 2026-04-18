@@ -1,26 +1,19 @@
-// Commit on 2026-03-13
-// Commit on 2026-02-15
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
+const DEFAULT_TARGET = 'https://babayogi.vercel.app';
+const proxyTarget = (process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_BACKEND_URL || DEFAULT_TARGET).replace(/\/$/, '');
+
+module.exports = function setupProxy(app) {
+  // Keep frontend and backend as separate repos while enabling seamless local development.
   app.use(
-    '/generate-diet-plan',
+    ['/health', '/generate-diet-plan', '/diet-jobs', '/diet-logs', '/auth'],
     createProxyMiddleware({
-      target: 'https://babayogi.vercel.app',
+      target: proxyTarget,
       changeOrigin: true,
       secure: true,
-      timeout: 60000,
-      proxyTimeout: 60000,
-      logLevel: 'info',
-      onError: function (err, req, res) {
-        console.log('Proxy Error:', err.message);
-        res.writeHead(500, {
-          'Content-Type': 'text/plain'
-        });
-        res.end('Proxy error occurred');
-      },
-      onProxyReq: function (proxyReq, req, res) {
-        console.log('Proxying request to:', proxyReq.getHeader('host') + proxyReq.path);
-      },
-      onProxyRes: function (proxyRes, req, res) {
-        console.log('Proxy response status:
+      timeout: 120000,
+      proxyTimeout: 120000,
+      logLevel: 'warn',
+    })
+  );
+};

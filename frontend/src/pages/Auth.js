@@ -306,4 +306,9 @@ const Auth = () => {
             <button className={styles.provider} disabled>Continue with Apple (soon)</button>
           </div>
         </aside>
-      
+      </div>
+    </div>
+  );
+};
+
+export default Auth;

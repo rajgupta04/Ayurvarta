@@ -71,4 +71,7 @@ export default function PrakritiAssessment() {
           );
         })()}
         </div>
-      </div
+      </div>
+    </section>
+  );
+}

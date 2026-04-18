@@ -11,7 +11,7 @@ export default function VikritiAssessment() {
   const [answers, setAnswers] = useState({});
   const [idx, setIdx] = useState(0); // 0 = disease selection, then quiz starts at 1
   const nav = useNavigate();
-  const onChange = (id, val) => setAnswers(a => ({ ...a, [id]: val }));
+  const onChange = (id, val) => setAnswers((a) => ({ ...a, [id]: val }));
   const totalSteps = 1 + VIKRITI_QUESTIONS.length;
 
   return (
@@ -27,27 +27,37 @@ export default function VikritiAssessment() {
               <div className={quizStyles.questionContent}>
                 <DiseaseSelector
                   value={answers.disease || { category: null, disease: null }}
-                  onChange={(val) => setAnswers(a => ({ ...a, disease: val }))}
+                  onChange={(val) => setAnswers((a) => ({ ...a, disease: val }))}
                 />
               </div>
               <div className={quizStyles.navigation}>
                 <span />
-                <button className={quizStyles.navButton} disabled={!answers?.disease?.disease} onClick={() => setIdx(1)}>Continue</button>
+                <button
+                  className={quizStyles.navButton}
+                  disabled={!answers?.disease?.disease}
+                  onClick={() => setIdx(1)}
+                >
+                  Continue
+                </button>
               </div>
             </>
           ) : (
             (() => {
-              const qIndex = idx - 1; // map to VIKRITI_QUESTIONS index
+              const qIndex = idx - 1;
               const q = VIKRITI_QUESTIONS[qIndex];
               const isLast = qIndex === VIKRITI_QUESTIONS.length - 1;
               return (
                 <>
-                  <p className={quizStyles.progressIndicator}>QUESTION {qIndex + 1} OF {VIKRITI_QUESTIONS.length}</p>
+                  <p className={quizStyles.progressIndicator}>
+                    QUESTION {qIndex + 1} OF {VIKRITI_QUESTIONS.length}
+                  </p>
                   <h2>{q.q}</h2>
                   <div className={quizStyles.questionContent}>
                     <div className={quizStyles.radioOptions}>
                       {q.options.map((opt) => (
-                        <label key={opt} className={`${quizStyles.radioLabel} ${answers[q.id] === opt ? quizStyles.selected : ''}`}
+                        <label
+                          key={opt}
+                          className={`${quizStyles.radioLabel} ${answers[q.id] === opt ? quizStyles.selected : ''}`}
                           onClick={() => onChange(q.id, opt)}
                         >
                           <span className={quizStyles.radioInput}></span>
@@ -57,16 +67,24 @@ export default function VikritiAssessment() {
                     </div>
                   </div>
                   <div className={quizStyles.navigation}>
-                    <button className={quizStyles.navButton} onClick={() => setIdx(i=>i-1)}>Back</button>
+                    <button className={quizStyles.navButton} onClick={() => setIdx((i) => i - 1)}>
+                      Back
+                    </button>
                     {!isLast ? (
-                      <button className={quizStyles.navButton} disabled={!answers[q.id]} onClick={() => setIdx(i=>i+1)}>Continue</button>
+                      <button
+                        className={quizStyles.navButton}
+                        disabled={!answers[q.id]}
+                        onClick={() => setIdx((i) => i + 1)}
+                      >
+                        Continue
+                      </button>
                     ) : (
                       <button
                         className={quizStyles.navButton}
                         disabled={!answers[q.id]}
                         onClick={() => {
                           const counts = { Sama: 0, Vishama: 0, Tikshna: 0, Manda: 0 };
-                          VIKRITI_QUESTIONS.forEach(qq => {
+                          VIKRITI_QUESTIONS.forEach((qq) => {
                             const opt = answers[qq.id];
                             if (!opt) return;
                             if (opt.includes('(Sama)')) counts.Sama += 1;
@@ -74,12 +92,17 @@ export default function VikritiAssessment() {
                             else if (opt.includes('(Tikshna)')) counts.Tikshna += 1;
                             else if (opt.includes('(Manda)')) counts.Manda += 1;
                           });
-                          // eslint-disable-next-line no-console
-                          console.log('[Vikriti] Disease:', answers?.disease);
-                          // eslint-disable-next-line no-console
-                          console.log('[Vikriti] Scores:', counts);
-                          const params = new URLSearchParams({ sama: counts.Sama, vishama: counts.Vishama, tikshna: counts.Tikshna, manda: counts.Manda });
-                          saveAssessmentResult('vikriti', { scores: counts, disease: answers?.disease || null, schema: 'agni-4' });
+                          saveAssessmentResult('vikriti', {
+                            scores: counts,
+                            disease: answers?.disease || null,
+                            schema: 'agni-4',
+                          });
+                          const params = new URLSearchParams({
+                            sama: counts.Sama,
+                            vishama: counts.Vishama,
+                            tikshna: counts.Tikshna,
+                            manda: counts.Manda,
+                          });
                           nav(`/assessment/vikriti/result?${params.toString()}`);
                         }}
                       >
@@ -92,4 +115,7 @@ export default function VikritiAssessment() {
             })()
           )}
         </div>
-      </div
+      </div>
+    </section>
+  );
+}

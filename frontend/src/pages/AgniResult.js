@@ -38,4 +38,7 @@ export default function AgniResult() {
       chips={chips}
       note="Congratulations! All assessments complete. Your personalized diet plan is ready!"
       nextHref="/diet-plan"
-      n
+      nextText="Go to Diet Plan"
+    />
+  );
+}

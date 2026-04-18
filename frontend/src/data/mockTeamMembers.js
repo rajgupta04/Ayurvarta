@@ -3,9 +3,16 @@ export const mockTeamMembers = [
   {
     name: 'Dr. Jane Doe',
     title: 'Ayurvedic Practitioner',
-  image: 'vaidya-placeholder-1.png'
+    image: 'vaidya-placeholder-1.png',
   },
   {
     name: 'Dr. John Smith',
     title: 'Ayurvedic Practitioner',
-  image: 'vaidya-pl
+    image: 'vaidya-placeholder-2.png',
+  },
+  {
+    name: 'Dr. Anaya Rao',
+    title: 'Clinical Nutrition Expert',
+    image: 'vaidya-placeholder-3.png',
+  },
+];

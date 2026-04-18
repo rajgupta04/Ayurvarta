@@ -5,7 +5,7 @@ const AUTH_EVENT_NAME = 'ayurvarta-auth-changed';
 const API_BASE = (
   process.env.REACT_APP_API_BASE_URL ||
   process.env.REACT_APP_BACKEND_URL ||
-  'http://localhost:8000'
+  'https://babayogi.vercel.app'
 ).replace(/\/$/, '');
 
 const parseMaybeJson = async (response) => {

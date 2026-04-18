@@ -541,4 +541,4 @@ const DietPlan = () => {
   );
 };
 
-ex
+export default DietPlan;

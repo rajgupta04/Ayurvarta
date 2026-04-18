@@ -1,100 +1,99 @@
 // Commit on 2026-03-16
 // Commit on 2026-02-07
 export const mockDietPlan = {
-	summary:
-		'Based on your answers, your constitution leans Pitta with a Vata influence. Your agni (digestive fire) shows signs of being tikshna (sharp). We will emphasize cooling, grounding, and steady routines.',
+  summary:
+    'Based on your answers, your constitution leans Pitta with a Vata influence. Your agni currently appears strong, so we focus on cooling and grounding routines.',
 
-	doshaProfile: {
-		dominant: 'Pitta',
-		secondary: 'Vata',
-		agni: 'Tikshna (sharp)',
-		goals: ['Cool and calm the system', 'Support hydration and lubrication', 'Stabilize energy and mood'],
-	},
+  doshaProfile: {
+    dominant: 'Pitta',
+    secondary: 'Vata',
+    agni: 'Tikshna (strong)',
+    goals: ['Cool and calm the system', 'Support hydration', 'Stabilize daily energy'],
+  },
 
-	rasaFocus: {
-		favor: ['Sweet', 'Bitter', 'Astringent'],
-		reduce: ['Sour', 'Salty', 'Pungent'],
-	},
+  rasaFocus: {
+    favor: ['Sweet', 'Bitter', 'Astringent'],
+    reduce: ['Sour', 'Salty', 'Pungent'],
+  },
 
-	gunaFocus: {
-		favor: ['Cooling', 'Grounding', 'Unctuous (oily)'],
-		reduce: ['Hot', 'Sharp', 'Dry'],
-	},
+  gunaFocus: {
+    favor: ['Cooling', 'Grounding', 'Unctuous'],
+    reduce: ['Hot', 'Sharp', 'Dry'],
+  },
 
-	dailyMealPlan: {
-		title: 'Daily Meal Rhythm',
-		meals: [
-			{
-				name: 'Breakfast',
-				description: 'Warm porridge with soaked raisins, ghee, and cardamom; or stewed apples/pears. Avoid iced drinks.',
-			},
-			{
-				name: 'Lunch',
-				description: 'Your main meal. Rice or quinoa with mung dal khichdi, sautéed greens, cucumber raita, and cilantro chutney.',
-			},
-			{
-				name: 'Dinner',
-				description: 'Light, early dinner. Vegetable soups, soft grains, lightly spiced. Aim to finish by 7:30pm.',
-			},
-		],
-	},
+  dailyMealPlan: {
+    title: 'Daily Meal Rhythm',
+    meals: [
+      {
+        name: 'Breakfast',
+        description: 'Warm porridge with cardamom and soaked raisins; avoid iced drinks.',
+      },
+      {
+        name: 'Lunch',
+        description: 'Main meal with rice, mung dal, seasonal vegetables, and mild spices.',
+      },
+      {
+        name: 'Dinner',
+        description: 'Light and early dinner such as soup with soft grains.',
+      },
+    ],
+  },
 
-	recommendedFoods: {
-		title: 'Foods to Favor',
-		icon: 'programs-icon.png',
-		items: [
-			'Grains: rice, oats, wheat (in moderation), barley',
-			'Legumes: mung dal, masoor, split lentils; well-cooked with ghee',
-			'Vegetables: leafy greens, asparagus, zucchini, cucumber, sweet potato, pumpkin',
-			'Fruits: sweet ripe fruits—mango, pear, pomegranate, melon, grapes (in moderation)',
-			'Dairy: cooling dairy like milk (warm), ghee; avoid sour yogurt at night',
-			'Fats: ghee, coconut oil, olive oil (moderation)',
-			'Herbs/Spices (cooling): coriander, fennel, mint, cilantro, cardamom, small cumin',
-		],
-	},
+  recommendedFoods: {
+    title: 'Foods to Favor',
+    icon: 'programs-icon.png',
+    items: [
+      'Rice, oats, and barley',
+      'Mung dal and split lentils',
+      'Leafy greens, zucchini, cucumber',
+      'Sweet ripe fruits in moderation',
+      'Cooling herbs: coriander, fennel, mint',
+    ],
+  },
 
-	foodsToAvoid: {
-		title: 'Reduce or Avoid',
-		icon: 'support-icon.png',
-		items: [
-			'Very spicy: chili, mustard seeds, excess ginger/black pepper',
-			'Sour/fermented: vinegar, pickles, sour yogurt (especially at night)',
-			'Salty and fried foods; heavy deep-fried snacks',
-			'Red meat; very aged cheeses',
-			'Iced drinks; caffeinated energy drinks; alcohol (especially sour wines)',
-		],
-	},
+  foodsToAvoid: {
+    title: 'Reduce or Avoid',
+    icon: 'support-icon.png',
+    items: [
+      'Very spicy and deep-fried foods',
+      'Excess sour and salty foods',
+      'Iced drinks and energy drinks',
+      'Heavy late-night meals',
+    ],
+  },
 
-	lifestyleTips: {
-		title: 'Lifestyle & Dinacharya',
-		icon: 'consultation-icon.png',
-		items: [
-			'Wake early; gentle cooling pranayama (sheetali/sheetkari) and meditation',
-			'Self-massage (abhyanga) with coconut or sunflower oil 2–3×/week',
-			'Avoid midday sun; favor moonlight walks and calming evening routines',
-			'Regular meal times; no heavy work immediately after eating',
-		],
-	},
+  lifestyleTips: {
+    title: 'Lifestyle & Dinacharya',
+    icon: 'consultation-icon.png',
+    items: [
+      'Keep fixed meal timings',
+      'Practice calming breathing in the evening',
+      'Take short walks after meals',
+      'Prioritize consistent sleep schedule',
+    ],
+  },
 
-	seasonalTips: {
-		title: 'Seasonal Guidance (Ritucharya)',
-		tips: [
-			{ season: 'Summer', note: 'Favor cooling foods (cucumber, melon) and herbs (mint, coriander); avoid chili and vinegar.' },
-			{ season: 'Monsoon', note: 'Light, warm, digestible meals; ginger-fennel tea (mild) to support agni without overheating.' },
-			{ season: 'Autumn', note: 'Grounding, unctuous foods with ghee; stabilize with regular routines and adequate rest.' },
-		],
-	},
+  seasonalTips: {
+    title: 'Seasonal Guidance',
+    tips: [
+      { season: 'Summer', note: 'Favor cooling foods and hydration.' },
+      { season: 'Monsoon', note: 'Keep meals warm, light, and easy to digest.' },
+      { season: 'Winter', note: 'Use nourishing warm meals with mild spices.' },
+    ],
+  },
 
-	hydration: {
-		title: 'Hydration',
-		points: [
-			'Sip warm or room-temperature water through the day; avoid ice-cold beverages.',
-			'Try cooling infusions: fennel-coriander tea, or water infused with mint and a slice of lime.',
-		],
-	},
+  hydration: {
+    title: 'Hydration',
+    points: [
+      'Sip warm or room-temperature water through the day.',
+      'Use mild herbal infusions like fennel-coriander water.',
+    ],
+  },
 
-	spices: {
-		title: 'Spice Guidance',
-		favor: ['Coriander', 'Fennel', 'Mint', 'Cilantro', 'Cardamom'],
-		moderate: ['Cumin', 'Turmeric', 'Black pepper (small)'],
-		reduce: ['Chili',
+  spices: {
+    title: 'Spice Guidance',
+    favor: ['Coriander', 'Fennel', 'Mint', 'Cardamom'],
+    moderate: ['Cumin', 'Turmeric'],
+    reduce: ['Chili', 'Mustard seeds'],
+  },
+};
