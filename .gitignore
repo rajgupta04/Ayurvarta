@@ -1,2 +1,37 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# Monorepo ignore rules
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/**/node_modules/
+ECHO is on.
+# Build outputs
+build/
+frontend/build/
+dist/
+.vercel/
+ECHO is on.
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+ECHO is on.
+# Env files
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+ECHO is on.
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+ECHO is on.
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
