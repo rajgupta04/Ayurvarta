@@ -1,46 +1,103 @@
-# AyurVarta - Ayurvedic Diet Planner
+# AyurVarta — AI-Powered Personalized Ayurvedic Wellness Platform
 
-This workspace is split into two independent apps:
+Submitted for **Smart India Hackathon (SIH 2025)**.
 
-- Frontend app: `Ayurvarta/frontend` (React)
-- Backend app: `../backend/babayogi` (FastAPI + RAG pipeline)
+AyurVarta is an integrated digital health platform combining ancient Ayurvedic principles with modern clinical Artificial Intelligence. It evaluates an individual's **Prakriti** (innate constitutional baseline), **Vikriti** (current dosha imbalance), and **Agni** (digestive metabolic state) to retrieve suitable healing foods and synthesize structured, safe, and personalized diet charts.
 
-## Project Intent
+---
 
-AyurVarta generates personalized Ayurvedic diet guidance from:
+## 🏛️ System Architecture
 
-- Prakriti and Vikriti scores
-- Agni and lifestyle context
-- Dietary preferences, allergies, and seasonal factors
+```mermaid
+flowchart LR
+    subgraph Frontend["React 19 SPA (frontend/)"]
+        Quizzes["Prakriti · Vikriti · Agni Quizzes"]
+        Dashboard["User Health Dashboard"]
+        DietUI["Diet Planner & Meal Tracker"]
+        Agora["Agora Tele-Consultation"]
+        Chatbot["Ayurvedic AI Assistant"]
+    end
 
-The backend uses a RAG workflow to retrieve relevant Ayurvedic food knowledge and generate structured plans.
+    subgraph Backend["FastAPI Backend (backend/babayogi/)"]
+        Auth["JWT & Google OAuth Auth"]
+        Ontology["Ayurvedic Knowledge Ontology"]
+        Cache["Cohort Similarity Caching"]
+        RAG["RAG Retrieval & Guardrails"]
+    end
 
-## Local Development
+    subgraph External["External Cloud & AI Services"]
+        Gemini["Google Gemini 2.5 Pro & Embeddings"]
+        Pinecone[("Pinecone Vector DB")]
+        MongoDB[("MongoDB Persistence")]
+    end
 
-1. Run backend:
+    Frontend -->|REST API + Bearer JWT| Backend
+    Backend --> MongoDB
+    RAG --> Pinecone
+    RAG --> Gemini
+```
+
+---
+
+## ✨ Core Platform Features
+
+- **Constitutional Assessments**: Multi-step interactive questionnaires assessing Prakriti, Vikriti, and Agni with visual charts and score breakdowns.
+- **RAG-Driven Diet Generator**: Queries curated Ayurvedic food vectors from Pinecone using semantic embeddings expanded with classical pacifying tastes (Shad-Rasa) and qualities (Vimshati Guna).
+- **Viruddha Ahara Safety Checking**: Integrated guardrail checking meal plans against Charaka's 18 incompatibility rules to prevent adverse food pairings (e.g. heated honey, milk + fish).
+- **Real-Time Tele-Consultations**: Video appointments connecting patients directly with certified Ayurvedic dietitians powered by the Agora RTC SDK.
+- **Adherence & Habit Tracking**: Daily meal logging with adherence ratings (1-5 scale) and notes stored in MongoDB.
+- **Personalized AI Assistant**: Interactive conversational guide answering Ayurvedic lifestyle and dinacharya questions.
+- **Export & Reporting**: One-click PDF generation of complete diet charts using `html2canvas` and `jsPDF`.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend ([`frontend/`](frontend))
+- **Core**: React 19, React Router v7
+- **Styling**: Tailwind CSS, CSS Modules, Lucide React icons
+- **Visualizations**: Chart.js, `react-chartjs-2`
+- **Telemedicine**: `agora-rtc-sdk-ng`
+- **PDF Generation**: `html2canvas`, `jspdf`
+
+### Backend ([`../backend/babayogi`](../backend/babayogi))
+- **Framework**: Python 3.11+, FastAPI, Uvicorn, Pydantic v2
+- **Vector Search**: Pinecone (`ayurvedic-foods-v2`)
+- **LLM & Embeddings**: Google Gemini 2.5 Pro & `gemini-embedding-001`
+- **Database**: MongoDB (Atlas)
+- **Ontology System**: JSON knowledge base + Pydantic v2 validators + verification CLI
+
+---
+
+## 🚀 Local Development Setup
+
+### 1. Run the Backend API
 
 ```bash
 cd ../backend/babayogi
 pip install -r requirements.txt
+python -m ontology.verify   # Verify ontology integrity
 uvicorn main:app --reload --port 8000
 ```
 
-2. Run frontend:
+### 2. Run the Frontend App
 
 ```bash
 cd frontend
 npm install
-npm start
+npm test -- --watchAll=false   # Run unit tests
+npm start                      # Start dev server on http://localhost:3000
 ```
 
-3. Ensure frontend env (`frontend/.env`) contains:
-
+Ensure `frontend/.env` contains:
 ```env
 REACT_APP_API_BASE_URL=http://localhost:8000
 ```
 
-## Deployment Model
+---
 
-- Deploy frontend and backend separately.
-- Point frontend `REACT_APP_API_BASE_URL` to the backend deployment URL.
-- Configure backend `CORS_ORIGINS` to include frontend origins.
+## 📖 Documentation & Tracking
+
+- [Implementation Checklist](CHECKLIST.md)
+- [Gap Analysis vs Reference Clinical RAG](mds/gap-analysis.md)
+- [Multi-Phase Implementation Roadmap](mds/implementation-plan01.md)
