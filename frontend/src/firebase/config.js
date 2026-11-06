@@ -5,4 +5,4 @@
 
 export const auth = null;
 export const db = null;
-expor
+export default { auth, db };

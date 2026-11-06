@@ -512,6 +512,7 @@ const DietPlan = () => {
     );
   }
 
+
   const dietData = normalizeDietPlan(apiDietPlan, jobNotice);
   const {
     summary = '',
