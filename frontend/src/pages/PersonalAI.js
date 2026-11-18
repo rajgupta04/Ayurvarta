@@ -1,10 +1,14 @@
-// Commit on 2026-02-13
 import React, { useMemo, useState } from 'react';
 import styles from './PersonalAI.module.css';
 import { Link } from 'react-router-dom';
 import { getHistory } from '../utils/assessmentStorage';
 import { loadProfile } from '../utils/profileStorage';
 import { Line, Doughnut } from 'react-chartjs-2';
+import {
+  generatePersonalizedAdvice,
+  isAiConfigured,
+  getGroqModel,
+} from '../api/aiService';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,20 +20,15 @@ import {
   Legend
 } from 'chart.js';
 
-let GenAI;
-try { GenAI = require('@google/generative-ai').GoogleGenerativeAI; } catch { GenAI = null; }
-
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend);
-
-const preamble = `You are a friendly Ayurveda guide named AyurVarta. Be concise, clear, and supportive.
-Use general Ayurvedic principles; avoid medical claims. When you infer doshas, state uncertainty.
-Base suggestions on the provided user profile and assessment history when available.`;
 
 export default function PersonalAI() {
   const history = useMemo(() => getHistory(), []);
   const profile = useMemo(() => loadProfile(), []);
   const [advice, setAdvice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [hasKey] = useState(isAiConfigured());
+  const currentModel = getGroqModel();
 
   const latest = {
     prakriti: history.prakriti?.[0]?.scores || null,
@@ -63,14 +62,8 @@ export default function PersonalAI() {
     setBusy(true);
     try {
       const input = makeAdviceInput();
-      const key = process.env.REACT_APP_GEMINI_API_KEY;
-      if (GenAI && key) {
-        const client = new GenAI(key);
-        const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const prompt = `${preamble}\nHere is the user context as JSON:\n\n${JSON.stringify(input, null, 2)}\n\nProvide: 1) Current status summary, 2) Top 3 improvements for today, 3) Diet & lifestyle tips (short), 4) When to retake which assessment.`;
-        const result = await model.generateContent(prompt);
-        const r = await result.response;
-        const text = (r && r.text) ? r.text() : '';
+      if (isAiConfigured()) {
+        const text = await generatePersonalizedAdvice(input);
         setAdvice(text || 'No advice generated.');
       } else {
         // Fallback: heuristic advice
@@ -85,10 +78,11 @@ export default function PersonalAI() {
         if (doshaBlend.Kapha > doshaBlend.Vata && doshaBlend.Kapha > doshaBlend.Pitta) tips.push('Kapha tendencies noted. Favor light, warming meals and get a brisk walk to energize.');
         if (p.sleepDuration && p.sleepDuration < 7) tips.push('Aim for 7–8 hours of sleep tonight to support balance.');
         if (p.hydration) tips.push('Keep steady hydration; warm water between meals supports digestion.');
-        setAdvice(`Here’s a concise plan for today:\n\n- ${tips.join('\n- ')}`);
+        setAdvice(`Here’s a concise plan for today (Heuristic Mode):\n\n- ${tips.join('\n- ')}\n\n💡 Tip: Add your Groq API key in frontend/.env to enable deep LLM clinical analysis with ${currentModel}.`);
       }
     } catch (e) {
-      setAdvice('There was an issue creating advice.');
+      console.error('Error generating advice:', e);
+      setAdvice(`There was an issue creating advice: ${e.message}`);
     } finally {
       setBusy(false);
     }
@@ -99,7 +93,9 @@ export default function PersonalAI() {
       <div className={styles.headerRow}>
         <div>
           <h1 className={styles.title}>Your Personal AI</h1>
-          <div className={styles.subtitle}>See your current scores, trends, and guided next steps.</div>
+          <div className={styles.subtitle}>
+            Clinical guidance powered by Groq (<code>{currentModel}</code>)
+          </div>
         </div>
         <Link className={styles.backLink} to="/dashboard">← Back to Dashboard</Link>
       </div>
@@ -125,10 +121,16 @@ export default function PersonalAI() {
         <div className={styles.card}>
           <h3>Guided Advice</h3>
           <div className={styles.actions}>
-            <button className={styles.btn} onClick={generateAdvice} disabled={busy}>{busy ? 'Thinking…' : 'Generate Advice'}</button>
-            {!process.env.REACT_APP_GEMINI_API_KEY && <span className={styles.notice}>Set REACT_APP_GEMINI_API_KEY for AI-powered guidance.</span>}
+            <button className={styles.btn} onClick={generateAdvice} disabled={busy}>
+              {busy ? 'Generating with Groq…' : 'Generate Advice'}
+            </button>
+            {!hasKey && (
+              <span className={styles.notice}>
+                Set <code>REACT_APP_GROQ_API_KEY</code> in <code>.env</code> for Groq AI responses.
+              </span>
+            )}
           </div>
-          <div className={styles.advice} style={{ marginTop: 8 }}>
+          <div className={styles.advice} style={{ marginTop: 8, whiteSpace: 'pre-wrap' }}>
             {advice || 'Click “Generate Advice” to see personalized suggestions.'}
           </div>
         </div>
@@ -163,10 +165,3 @@ export default function PersonalAI() {
     </section>
   );
 }
-
-// Commit on 2026-03-07 
-// Commit on 2026-03-07 
-// Commit on 2026-03-07 
-// Commit on 2026-03-04 
-// Commit on 2026-03-04 
-// Commit on 2026-03-04 

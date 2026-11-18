@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   createAuthUserWithEmailAndPassword, 
   signInAuthUserWithEmailAndPassword,
+  signInAsGuest,
   resetPassword,
   signInWithGoogleIdToken,
 } from '../firebase/auth';
@@ -279,6 +280,26 @@ const Auth = () => {
                 disabled={isLoading}
               >
                 {isLoading ? 'Please wait...' : (mode === 'login' ? 'Login' : 'Create Account')}
+              </button>
+
+              <button
+                type="button"
+                className={styles.resetBtn}
+                style={{
+                  background: 'rgba(61,90,70,0.1)',
+                  color: 'var(--primary-green)',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  marginTop: '8px',
+                  border: '1px dashed var(--primary-green)',
+                }}
+                onClick={() => {
+                  signInAsGuest('Dr. Ayurvedic Vaidya', role);
+                  navigate('/dashboard');
+                }}
+              >
+                ⚡ Quick Demo Mode (Explore Locally)
               </button>
               
               {mode === 'login' && (

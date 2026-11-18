@@ -4,6 +4,18 @@ const DEFAULT_TARGET = 'https://babayogi.vercel.app';
 const proxyTarget = (process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_BACKEND_URL || DEFAULT_TARGET).replace(/\/$/, '');
 
 module.exports = function setupProxy(app) {
+  // Proxy Groq API requests to prevent CORS issues in local development
+  app.use(
+    '/api/groq',
+    createProxyMiddleware({
+      target: 'https://api.groq.com',
+      changeOrigin: true,
+      pathRewrite: { '^/api/groq': '' },
+      secure: true,
+      logLevel: 'warn',
+    })
+  );
+
   // Keep frontend and backend as separate repos while enabling seamless local development.
   app.use(
     ['/health', '/generate-diet-plan', '/diet-jobs', '/diet-logs', '/auth'],

@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import styles from './DietPlan.module.css';
 import { getHistory, clearAssessmentHistory } from '../utils/assessmentStorage';
 import DietPreferencesModal from '../components/DietPreferencesModal';
+import { mockDietPlan } from '../data/mockDietPlan';
 import {
   createDietLog,
   deleteDietLog,
@@ -362,7 +363,10 @@ const DietPlan = () => {
       const job = await startDietPlanGeneration(payload);
       setJobState({ id: job.id, status: job.status, message: job.message || '' });
     } catch (err) {
-      setError(err.message || 'Failed to start diet generation.');
+      console.warn('Backend diet generation failed, loading local Ayurvedic plan template:', err);
+      // Fallback for local testing
+      setApiDietPlan(normalizeDietPlan(mockDietPlan));
+      setJobNotice('Showing offline Ayurvedic plan template. Connect the backend API for live RAG generation.');
       setIsLoading(false);
     }
   };
