@@ -22,7 +22,7 @@ flowchart TD
     end
 
     subgraph ServiceTier["⚙️ Application & Compute Tier (Separately Hosted)"]
-        BackendSvc["Core Backend Service (FastAPI)<br/>Hosted: AWS ECS / Render / Cloud Run<br/>• Auth & RBAC (JWT & OAuth)<br/>• Assessment Calculation Engine<br/>• Ayurvedic Ontology Verifier<br/>• Async Job Orchestration"]
+        BackendSvc["Core Backend Service (Node.js Express)<br/>Hosted: AWS ECS / Render / Cloud Run<br/>• Auth & RBAC (JWT & OAuth)<br/>• Assessment Calculation Engine<br/>• Clinical Gateway Orchestrator<br/>• Async Job Orchestration"]
         
         MLSvc["ML Inference & RAG Service (FastAPI / vLLM)<br/>Hosted: GPU Cloud / Vertex AI / RunPod<br/>• Embedding Generation<br/>• Dense + Rasa/Guna Vector Search<br/>• Gemini 2.5 / Groq LLM Generation<br/>• Viruddha Ahara Clinical Guardrails"]
 
