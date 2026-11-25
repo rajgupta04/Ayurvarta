@@ -66,15 +66,25 @@ function App() {
 
   const HeaderVisibility = () => {
     const location = useLocation();
-    if (location.pathname.startsWith('/dashboard')) return null;
+    if (location.pathname === '/' || location.pathname.startsWith('/dashboard')) return null;
     return <Header />;
+  };
+
+  const MainShell = ({ children }) => {
+    const location = useLocation();
+    const isHome = location.pathname === '/';
+    return (
+      <main className={isHome ? 'fullBleedMain' : 'container'}>
+        {children}
+      </main>
+    );
   };
 
   return (
     <AuthProvider>
       <Router>
         <HeaderVisibility />
-        <main className="container">
+        <MainShell>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Navigate to="/"  />} />
@@ -139,7 +149,7 @@ function App() {
             {/* Catch-all route -> redirect home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </main>
+        </MainShell>
         <Footer />
         <Chatbot />
       </Router>

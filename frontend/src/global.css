@@ -76,6 +76,13 @@ a {
   padding: 20px;
 }
 
+.fullBleedMain {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 
 /* -------- Theme utilities (opt-in) -------- */
 .u-text-green { color: var(--primary-green) !important; }
