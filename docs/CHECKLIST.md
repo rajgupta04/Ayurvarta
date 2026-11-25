@@ -1,6 +1,6 @@
 # AyurVarta — Implementation Checklist & Progress Tracker
 
-> **Project**: AyurVarta (SIH 2025) — Personalized Ayurvedic Diet Generation RAG  
+> **Project**: AyurVarta — Personalized Ayurvedic Diet Generation RAG  
 > **Status**: In Active Development  
 > **Last Updated**: November 2026  
 
@@ -65,7 +65,7 @@
 
 ## ✅ Phase 1B: Ontology Pipeline Integration
 - [x] **Semantic query expansion**: In `backend/babayogi/logic.py`, Pinecone queries now automatically include ontology-derived pacifying tastes (Rasas) and qualities (Gunas).
-- [x] **Deterministic prompt grounding**: Injected verified Ayurvedic rules into the Gemini 2.5 Pro prompt to constrain meal plan generation.
+- [x] **Deterministic prompt grounding**: Injected verified Ayurvedic rules into the LLM prompt (migrating to Groq `llama-3.3-70b-versatile`) to constrain meal plan generation.
 - [x] **Viruddha safety post-check**: Implemented post-generation safety scan on all recommended foods; appends `viruddha_safety_checks` warnings directly into the API response.
 
 ---
@@ -84,7 +84,7 @@
   - [ ] Classify user query intent (meal plan vs acute symptom vs general inquiry).
   - [ ] Route across dense semantic search, sparse lexical search, and deterministic graph traversal.
 - [ ] **Hybrid Search** (`retrieval/vector_search.py`):
-  - [ ] Dense vector retrieval (Gemini embeddings) + Sparse BM25 retrieval for exact spice/dish names.
+  - [ ] Dense vector retrieval (`BAAI/bge-small-en-v1.5` 384-dim embeddings) + Sparse BM25 retrieval for exact spice/dish names.
 - [ ] **Knowledge Graph Traversal** (`retrieval/graph_search.py`):
   - [ ] Deterministic graph query against MongoDB `kg_relations` for absolute contraindications and guaranteed pacifying dishes.
 - [ ] **Cross-Encoder Reranker** (`retrieval/reranker.py`):

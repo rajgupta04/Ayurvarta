@@ -1,0 +1,142 @@
+version: '3.8'
+
+networks:
+  ayurvarta-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+services:
+  # -----------------------------------------------------------
+  # Polyglot Storage: MongoDB Document Store
+  # -----------------------------------------------------------
+  mongodb:
+    image: mongo:7.0
+    container_name: ayurvarta-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ayur_admin
+      MONGO_INITDB_ROOT_PASSWORD: ayur_secure_password
+      MONGO_INITDB_DATABASE: ayurvarta
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ayurvarta-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------------------------------------
+  # Polyglot Storage: Redis In-Memory Cache & Broker
+  # -----------------------------------------------------------
+  redis:
+    image: redis:7.2-alpine
+    container_name: ayurvarta-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "ayur_redis_password"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - ayurvarta-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "ayur_redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------------------------------------
+  # Polyglot Storage: Local Vector DB (Qdrant for local dev)
+  # (Production can swap endpoint to Pinecone Cloud)
+  # -----------------------------------------------------------
+  vectordb:
+    image: qdrant/qdrant:v1.7.4
+    container_name: ayurvarta-vectordb
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    networks:
+      - ayurvarta-network
+
+  # -----------------------------------------------------------
+  # Distributed Service: Dedicated ML Inference & RAG Service
+  # -----------------------------------------------------------
+  ml-service:
+    build:
+      context: .
+      dockerfile: ml-service/Dockerfile
+    container_name: ayurvarta-ml-service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - ENVIRONMENT=development
+      - INTERNAL_SERVICE_KEY=dev_internal_secret_key_123
+      - PINECONE_API_KEY=${PINECONE_API_KEY:-mock_key}
+      - GROQ_API_KEY=${GROQ_API_KEY:-mock_key}
+      - PRIMARY_LLM=${PRIMARY_LLM:-llama-3.3-70b-versatile}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-BAAI/bge-small-en-v1.5}
+      - VECTOR_DB_HOST=http://vectordb:6333
+    depends_on:
+      vectordb:
+        condition: service_started
+    networks:
+      - ayurvarta-network
+
+  # -----------------------------------------------------------
+  # Distributed Service: Core Backend API Gateway & Orchestrator
+  # -----------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ayurvarta-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=development
+      - MONGODB_URI=mongodb://ayur_admin:ayur_secure_password@mongodb:27017/ayurvarta?authSource=admin
+      - REDIS_URL=redis://:ayur_redis_password@redis:6379/0
+      - ML_SERVICE_URL=http://ml-service:8001
+      - INTERNAL_SERVICE_KEY=dev_internal_secret_key_123
+      - JWT_SECRET=dev_jwt_secret_must_be_over_32_characters_long
+      - AGORA_APP_ID=${AGORA_APP_ID:-mock_agora_id}
+      - AGORA_APP_CERTIFICATE=${AGORA_APP_CERTIFICATE:-mock_agora_cert}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    networks:
+      - ayurvarta-network
+
+  # -----------------------------------------------------------
+  # Distributed Service: Frontend React 19 Client SPA
+  # -----------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ayurvarta-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_BASE_URL=http://localhost:8000
+      - REACT_APP_AGORA_APP_ID=${REACT_APP_AGORA_APP_ID:-mock_agora_id}
+    depends_on:
+      - backend
+    networks:
+      - ayurvarta-network
