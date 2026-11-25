@@ -99,11 +99,9 @@
     inset: 0;
     z-index: 4;
     pointer-events: none;
-    background: radial-gradient(
-        ellipse at 50% 48%,
-        rgba(8, 22, 16, 0.04) 30%,
-        rgba(6, 18, 12, 0.34) 100%
-    );
+    background: radial-gradient(ellipse at 50% 48%,
+            rgba(8, 22, 16, 0.04) 30%,
+            rgba(6, 18, 12, 0.34) 100%);
 }
 
 .topLeftBrand {
@@ -232,10 +230,13 @@
 }
 
 @keyframes wheelDrop {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
         opacity: 1;
     }
+
     65% {
         transform: translateY(7px);
         opacity: 0.25;

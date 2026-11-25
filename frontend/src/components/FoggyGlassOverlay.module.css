@@ -6,7 +6,7 @@
   z-index: 3;
   display: block;
   touch-action: pan-y;
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><circle cx='18' cy='18' r='14' fill='rgba(255,255,255,0.14)' stroke='rgba(255,255,255,0.75)' stroke-width='1.5'/></svg>") 18 18, pointer;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><circle cx='14' cy='14' r='10' fill='rgba(255,255,255,0.08)' stroke='rgba(255,255,255,0.65)' stroke-width='1.2'/></svg>") 14 14, auto;
 }
 
 .staticFrost {
