@@ -1,10 +1,12 @@
 // Commit on 2026-02-05
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronDown, Home as HomeIcon, Volume2, VolumeX } from 'lucide-react';
 import BlurText from '../components/BlurText';
+import FoggyGlassOverlay from '../components/FoggyGlassOverlay';
+import LiquidGlassTitle, { LotusEmblem } from '../components/LiquidGlassTitle';
 import styles from './Home.module.css';
 import faqStyles from './Faq.module.css';
-import headerStyles from '../components/Header.module.css';
 import AgniDailyModal from '../components/AgniDailyModal';
 
 const blogPosts = [
@@ -49,38 +51,189 @@ const HOME_FAQS = [
 const Home = () => {
   const [openTeaser, setOpenTeaser] = useState({});
   const [agniOpen, setAgniOpen] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const [userMuted, setUserMuted] = useState(false);
+
+  const videoRef = useRef(null);
+  const audioRef = useRef(null);
+  const audioBtnRef = useRef(null);
+  const exploreRef = useRef(null);
+
   const toggleTeaser = (idx) => setOpenTeaser((o) => ({ ...o, [idx]: !o[idx] }));
+  const scrollToExplore = () => {
+    exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (mq) {
+      setPrefersReducedMotion(mq.matches);
+    }
+    if (videoRef.current && videoRef.current.readyState >= 3) {
+      setVideoReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return undefined;
+
+    audio.volume = 0.35;
+    let active = true;
+
+    const tryPlayMusic = async () => {
+      if (!active || userMuted || !audioRef.current) return false;
+      try {
+        await audioRef.current.play();
+        if (active) setMusicPlaying(true);
+        return true;
+      } catch {
+        // Browser blocked unmuted autoplay until first user gesture
+        if (active) setMusicPlaying(false);
+        return false;
+      }
+    };
+
+    tryPlayMusic();
+
+    const unlockAudio = async (event) => {
+      if (audioBtnRef.current?.contains(event.target)) return;
+      const started = await tryPlayMusic();
+      if (started) {
+        window.removeEventListener('pointerdown', unlockAudio);
+        window.removeEventListener('keydown', unlockAudio);
+      }
+    };
+
+    window.addEventListener('pointerdown', unlockAudio, { passive: true });
+    window.addEventListener('keydown', unlockAudio, { passive: true });
+
+    return () => {
+      active = false;
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      audio.pause();
+    };
+  }, [userMuted]);
+
+  const toggleMusic = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (!audio.paused) {
+      audio.pause();
+      setUserMuted(true);
+      setMusicPlaying(false);
+      return;
+    }
+
+    setUserMuted(false);
+    try {
+      await audio.play();
+      setMusicPlaying(true);
+    } catch {
+      setMusicPlaying(false);
+    }
+  };
+
   return (
     <div className={styles.home}>
-  {/* Daily reminder moved to Dashboard */}
-      {/* Hero Section - Two Column */}
-      <section
-        className={`${styles.heroTwoCol} ${styles.patternBase} reveal`}
-        data-reveal="fade-up"
-        style={{ backgroundImage: "url('/images/background-pattern.png')" }}
-      >
-  <div className={`${styles.heroImageWrap} ${styles.noShadow}`} style={{ overflow: 'visible' }}>
-          <div className={styles.heroLogoWrap} aria-hidden="false">
-            <span className={styles.heroring} />
-            <img src="/images/logo.png" alt="AyurVarta logo" className={`${headerStyles.logoImg} ${styles.heroLogoImg}`} />
-          </div>
-        </div>
-        <div className={styles.heroText}>
-          <h1 className={styles.heroTitle}>
-            <BlurText text="Elevate Your Health with Ancient Wisdom" />
-          </h1>
-          <p className={styles.heroBody}>
-            We blend the timeless science of Ayurveda with modern technology to create personalized wellness
-            plans that restore your natural balance.
-          </p>
-          <div className={styles.heroCtas}>
-            <Link to="/services" className={`${styles.ctaButton} ${styles.ctaPrimary}`}>View Our Services</Link>
-          </div>
-        </div>
+      {/* Full-bleed Ambient Video & Music Hero */}
+      <section className={styles.heroVideoSection} aria-label="AyurVarta ambient showcase">
+        <img
+          src="/bg/bgPoster.webp"
+          alt=""
+          className={styles.heroPoster}
+          fetchPriority="high"
+          decoding="async"
+        />
+
+        {!prefersReducedMotion && (
+          <video
+            ref={videoRef}
+            className={`${styles.heroVideo} ${videoReady ? styles.heroVideoVisible : ''}`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/bg/bgPoster.webp"
+            onCanPlay={() => setVideoReady(true)}
+            onLoadedData={() => setVideoReady(true)}
+            aria-hidden="true"
+          >
+            <source src="/bg/bgVideo.mp4" type="video/mp4" />
+          </video>
+        )}
+
+        <FoggyGlassOverlay
+          videoRef={videoRef}
+          posterSrc="/bg/bgPoster.webp"
+          reducedMotion={prefersReducedMotion}
+        />
+
+        <div className={styles.heroVignette} aria-hidden="true" />
+
+        {/* Top-Left Brand Mark */}
+        <Link to="/" className={styles.topLeftBrand} aria-label="AyurVarta Home">
+          <LotusEmblem size={30} className={styles.topBrandLotus} />
+          <span className={styles.topBrandName}>AyurVarta</span>
+        </Link>
+
+        {/* Top-Right Glass Pill Navigation */}
+        <nav className={styles.topGlassNav} aria-label="Primary navigation">
+          <button
+            type="button"
+            className={styles.glassNavHomeActive}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            aria-label="Home"
+          >
+            <HomeIcon size={16} strokeWidth={2.2} />
+          </button>
+          <Link to="/about" className={styles.glassNavLink}>About</Link>
+          <Link to="/services" className={styles.glassNavLink}>Explore</Link>
+          <Link to="/faq" className={styles.glassNavLink}>Contact</Link>
+        </nav>
+
+        {/* Center Liquid Glass Hero Title, Divider, Subtitle & CTA */}
+        <LiquidGlassTitle onExplore={scrollToExplore} />
+
+        {/* Bottom-Center Scroll Mouse Indicator */}
+        <button
+          type="button"
+          className={styles.scrollCueBtn}
+          onClick={scrollToExplore}
+          aria-label="Scroll to discover your dosha"
+        >
+          <span className={styles.mouseOutline}>
+            <span className={styles.mouseWheel} />
+          </span>
+          <ChevronDown size={16} strokeWidth={1.9} className={styles.scrollChevron} />
+        </button>
+
+        <audio ref={audioRef} loop preload="metadata">
+          <source src="/music/BgMusic.mp3" type="audio/mpeg" />
+        </audio>
+
+        <button
+          ref={audioBtnRef}
+          type="button"
+          className={styles.audioToggle}
+          onClick={toggleMusic}
+          aria-pressed={musicPlaying}
+          aria-label={musicPlaying ? 'Mute ambient background music' : 'Play ambient background music'}
+        >
+          {musicPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          <span>{musicPlaying ? 'Sound On' : 'Play Sound'}</span>
+        </button>
       </section>
 
       {/* Dosha Quiz Prompt */}
       <section
+        id="explore"
+        ref={exploreRef}
         className={`${styles.quizPrompt} ${styles.patternBase} reveal`}
         data-reveal="fade-up"
         style={{ backgroundImage: "url('/images/background-pattern-2.png')" }}
@@ -164,7 +317,7 @@ const Home = () => {
         data-reveal="fade-up"
         style={{ backgroundImage: "url('/images/background-pattern.png')" }}
       >
-  <h2 className={styles.sectionTitle}><BlurText text="Rooted in Tradition, Powered by Innovation" /></h2>
+        <h2 className={styles.sectionTitle}><BlurText text="Rooted in Tradition, Powered by Innovation" /></h2>
         <div className={styles.trustGrid}>
           <div className={styles.trustCard}>
             <img src="/images/authentic-ayurveda.png" alt="Authentic Ayurveda icon" />
@@ -196,7 +349,7 @@ const Home = () => {
         data-reveal="fade-up"
         style={{ backgroundImage: "url('/images/background-pattern-2.png')" }}
       >
-  <h2 className={styles.sectionTitle}><BlurText text="A Community of Wellness" /></h2>
+        <h2 className={styles.sectionTitle}><BlurText text="A Community of Wellness" /></h2>
         <div className={styles.testimonialGrid}>
           <div className={styles.testimonialCard}>
             <div className={styles.testimonialHeader}>
@@ -243,7 +396,7 @@ const Home = () => {
         data-reveal="fade-up"
         style={{ backgroundImage: "url('/images/background-pattern.png')" }}
       >
-  <h2 className={styles.sectionTitle}><BlurText text="Your Journey to Harmony" /></h2>
+        <h2 className={styles.sectionTitle}><BlurText text="Your Journey to Harmony" /></h2>
         <div className={styles.serviceCards}>
           <div className={styles.serviceCard}>
             <img src="/images/consultation-icon.png" alt="Personalized Consultations" />
@@ -327,7 +480,7 @@ const Home = () => {
           <Link to="/faq" className={`${styles.ctaButton} ${styles.ctaGhost}`}>View All FAQs</Link>
         </div>
       </section>
-  <AgniDailyModal open={agniOpen} onClose={() => setAgniOpen(false)} />
+      <AgniDailyModal open={agniOpen} onClose={() => setAgniOpen(false)} />
     </div>
   );
 }
