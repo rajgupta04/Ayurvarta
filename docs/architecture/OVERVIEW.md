@@ -24,7 +24,7 @@ flowchart TD
     subgraph ServiceTier["⚙️ Application & Compute Tier (Separately Hosted)"]
         BackendSvc["Core Backend Service (Node.js Express)<br/>Hosted: AWS ECS / Render / Cloud Run<br/>• Auth & RBAC (JWT & OAuth)<br/>• Assessment Calculation Engine<br/>• Clinical Gateway Orchestrator<br/>• Async Job Orchestration"]
         
-        MLSvc["ML Inference & RAG Service (FastAPI / vLLM)<br/>Hosted: GPU Cloud / Vertex AI / RunPod<br/>• Embedding Generation<br/>• Dense + Rasa/Guna Vector Search<br/>• Gemini 2.5 / Groq LLM Generation<br/>• Viruddha Ahara Clinical Guardrails"]
+        MLSvc["ML Inference & RAG Service (FastAPI + Groq)<br/>Hosted: GPU Cloud / Modal / RunPod<br/>• Local/ONNX Embedding Generation (384-dim)<br/>• Dense + Rasa/Guna Vector Search<br/>• Groq LLM Synthesis (Llama 3.3 70B / GPT-OSS 120B)<br/>• Viruddha Ahara Clinical Guardrails"]
 
         AgoraRTC["Agora Cloud RTC<br/>Hosted: Agora Global SD-RTN<br/>• Sub-second WebRTC Video/Audio"]
     end
@@ -124,7 +124,7 @@ sequenceDiagram
         ML->>ML: Expand query with classical Rasas & Gunas
         ML->>VDB: Query top-K food items (filter out allergens)
         VDB-->>ML: Return 15 candidate Ayurvedic foods
-        ML->>ML: Invoke Gemini 2.5 / Groq with clinical constraints
+        ML->>ML: Invoke Groq LLM with clinical constraints
         ML->>ML: Run Viruddha Ahara Guardrail (18 Charaka Rules)
         ML-->>BE: Return validated Diet Plan JSON
         
@@ -149,4 +149,4 @@ sequenceDiagram
 
 1. **Request Correlation ID**: Every inbound HTTP request at the API Gateway receives an `X-Request-Id` (e.g., `req_8f12a84c`). This header is propagated across Core Backend, Redis, ML Service, and in every structured log line.
 2. **Internal Service Authentication**: The ML service is not exposed to the public internet. It accepts incoming traffic only from the Core Backend IP/VPC with an `X-Internal-Service-Key` HMAC header.
-3. **Secrets Management**: All third-party secrets (`GEMINI_API_KEY`, `PINECONE_API_KEY`, `MONGODB_URI`, `REDIS_URL`, `AGORA_APP_CERTIFICATE`) are injected at runtime via environment variables or secret managers (AWS Secrets Manager, GCP Secret Manager, or Doppler).
+3. **Secrets Management**: All third-party secrets (`GROQ_API_KEY`, `PINECONE_API_KEY`, `MONGODB_URI`, `REDIS_URL`, `AGORA_APP_CERTIFICATE`) are injected at runtime via environment variables or secret managers (AWS Secrets Manager, GCP Secret Manager, or Doppler).

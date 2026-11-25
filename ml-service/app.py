@@ -45,9 +45,11 @@ async def health_check():
         "service": "ml-inference-service",
         "version": "1.0.0",
         "models": {
+            "provider": "groq",
             "primary_llm": settings.PRIMARY_LLM,
             "fallback_llm": settings.FALLBACK_LLM,
-            "embedding_model": settings.EMBEDDING_MODEL
+            "embedding_model": settings.EMBEDDING_MODEL,
+            "embedding_dimensions": settings.EMBEDDING_DIMENSIONS
         }
     }
 

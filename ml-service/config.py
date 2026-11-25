@@ -11,14 +11,14 @@ class Settings(BaseSettings):
     PINECONE_ENVIRONMENT: str = "us-east-1"
     PINECONE_INDEX_NAME: str = "ayurvedic-foods-v2"
 
-    # LLMs
-    GEMINI_API_KEY: str = "mock_gemini_key"
+    # Groq LLM Inference
     GROQ_API_KEY: str = "mock_groq_key"
 
-    # Configurations
-    EMBEDDING_MODEL: str = "gemini-embedding-001"
-    PRIMARY_LLM: str = "gemini-2.5-pro"
-    FALLBACK_LLM: str = "groq-llama-3.3-70b-versatile"
+    # Model Configurations
+    EMBEDDING_MODEL: str = "BAAI/bge-small-en-v1.5"
+    EMBEDDING_DIMENSIONS: int = 384
+    PRIMARY_LLM: str = "llama-3.3-70b-versatile"
+    FALLBACK_LLM: str = "openai/gpt-oss-120b"
     LLM_TEMPERATURE: float = 0.2
 
     class Config:

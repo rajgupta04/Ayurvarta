@@ -4,7 +4,7 @@
 > **Role in Polyglot Architecture**: Semantic Retrieval & Embedding Store for Ayurvedic Foods & Scriptures  
 > **Index Name**: `ayurvedic-foods-v2`  
 > **Metric**: Cosine Similarity  
-> **Vector Dimension**: 384 dimensions (`gemini-embedding-001` / `bge-small-en-v1.5`)  
+> **Vector Dimension**: 384 dimensions (`BAAI/bge-small-en-v1.5` via FastEmbed)  
 
 ---
 

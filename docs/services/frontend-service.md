@@ -88,8 +88,9 @@ REACT_APP_API_BASE_URL=https://api.ayurvarta.com
 # Real-time Video Consultation (Agora)
 REACT_APP_AGORA_APP_ID=your_agora_app_id_here
 
-# Optional: Embedded AI Assistant Key (Development mode only)
-REACT_APP_GEMINI_API_KEY=your_gemini_api_key_here
+# Optional: Local Groq AI Assistant Key (Development fallback; production uses Backend /api/v1/ai/chat)
+REACT_APP_GROQ_API_KEY=your_groq_api_key_here
+REACT_APP_GROQ_MODEL=llama-3.3-70b-versatile
 ```
 
 ---

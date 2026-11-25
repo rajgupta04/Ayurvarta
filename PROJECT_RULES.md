@@ -26,7 +26,7 @@
 | :--- | :--- | :--- | :--- |
 | **Frontend Service** | React 19, React Router v7, Tailwind | Vercel / Cloudflare Pages / S3+CloudFront | User interface, assessments, dashboard, Agora video call UI, PDF generation |
 | **Core Backend (Gateway)** | Node.js 20+, Express.js, MongoDB Driver | Render / AWS ECS / Google Cloud Run | API Gateway, auth, profile management, assessment scoring, job orchestration |
-| **ML Inference Service** | Python 3.11+, FastAPI / vLLM, Gemini / Groq | RunPod / Modal / GCP Vertex AI / Dedicated GPU | Semantic vector expansion, RAG generation, Viruddha Ahara clinical safety verification |
+| **ML Inference Service** | Python 3.11+, FastAPI / vLLM, Groq (`llama-3.3-70b-versatile`) | RunPod / Modal / GCP Vertex AI / Dedicated GPU | Semantic vector expansion (`BAAI/bge-small-en-v1.5`), RAG generation, Viruddha Ahara clinical safety verification |
 | **Document Store (MongoDB)** | MongoDB 7.0+ (Atlas) | Managed Cloud Database | Users, assessment records, diet logs, and Knowledge Graph triples (`kg_entities`, `kg_relations`) |
 | **Vector DB (Pinecone)** | Pinecone Serverless / Qdrant | Managed Vector Cloud | Dense vectors (384/768-dim) for foods, herbs, and Ayurvedic formulations |
 | **Cache & Broker (Redis)** | Redis 7.2+ | Managed Upstash / Redis Cloud | Diet generation job state cache, cohort similarity cache, rate limits |

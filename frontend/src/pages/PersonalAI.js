@@ -16,8 +16,7 @@ import {
   Legend
 } from 'chart.js';
 
-let GenAI;
-try { GenAI = require('@google/generative-ai').GoogleGenerativeAI; } catch { GenAI = null; }
+import { generateAyurvedaAdvice, isGroqConfigured } from '../api/ai';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend);
 
@@ -63,14 +62,8 @@ export default function PersonalAI() {
     setBusy(true);
     try {
       const input = makeAdviceInput();
-      const key = process.env.REACT_APP_GEMINI_API_KEY;
-      if (GenAI && key) {
-        const client = new GenAI(key);
-        const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const prompt = `${preamble}\nHere is the user context as JSON:\n\n${JSON.stringify(input, null, 2)}\n\nProvide: 1) Current status summary, 2) Top 3 improvements for today, 3) Diet & lifestyle tips (short), 4) When to retake which assessment.`;
-        const result = await model.generateContent(prompt);
-        const r = await result.response;
-        const text = (r && r.text) ? r.text() : '';
+      if (isGroqConfigured()) {
+        const text = await generateAyurvedaAdvice(input, preamble);
         setAdvice(text || 'No advice generated.');
       } else {
         // Fallback: heuristic advice
@@ -88,7 +81,7 @@ export default function PersonalAI() {
         setAdvice(`Here’s a concise plan for today:\n\n- ${tips.join('\n- ')}`);
       }
     } catch (e) {
-      setAdvice('There was an issue creating advice.');
+      setAdvice('There was an issue creating advice via Groq.');
     } finally {
       setBusy(false);
     }
@@ -126,7 +119,7 @@ export default function PersonalAI() {
           <h3>Guided Advice</h3>
           <div className={styles.actions}>
             <button className={styles.btn} onClick={generateAdvice} disabled={busy}>{busy ? 'Thinking…' : 'Generate Advice'}</button>
-            {!process.env.REACT_APP_GEMINI_API_KEY && <span className={styles.notice}>Set REACT_APP_GEMINI_API_KEY for AI-powered guidance.</span>}
+            {!isGroqConfigured() && <span className={styles.notice}>Set REACT_APP_GROQ_API_KEY for Groq AI-powered guidance.</span>}
           </div>
           <div className={styles.advice} style={{ marginTop: 8 }}>
             {advice || 'Click “Generate Advice” to see personalized suggestions.'}

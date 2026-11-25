@@ -1,15 +1,6 @@
-// Commit on 2026-03-09
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './Chatbot.module.css';
-
-let GenAI;
-try {
-  // Lazy require to avoid issues if package not installed yet during import graph
-  // eslint-disable-next-line global-require
-  GenAI = require('@google/generative-ai').GoogleGenerativeAI;
-} catch (e) {
-  GenAI = null;
-}
+import { isGroqConfigured, sendAyurvedaChat } from '../api/ai';
 
 const SUGGESTIONS = [
   'What is my Dosha?',
@@ -20,7 +11,7 @@ const SUGGESTIONS = [
   'What is Prakriti vs Vikriti?'
 ];
 
-const systemPreamble = `You are an Ayurveda assistant. Provide clear, friendly guidance rooted in classical Ayurveda.
+const systemPreamble = `You are an Ayurveda assistant powered by AyurVarta. Provide clear, friendly guidance rooted in classical Ayurveda.
 Avoid medical claims; suggest consulting a qualified practitioner for serious concerns.
 When asked for diet tips, tailor to doshas when possible and prefer general principles if dosha unknown.`;
 
@@ -33,33 +24,26 @@ const Chatbot = () => {
   ]);
   const listRef = useRef(null);
 
-  const client = useMemo(() => {
-    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-    if (!GenAI || !apiKey) return null;
-    try { return new GenAI(apiKey); } catch { return null; }
-  }, []);
-
   const send = async (text) => {
     if (!text || busy) return;
     const userText = text.trim();
-    setMessages((m) => [...m, { role: 'user', text: userText }]);
+    const nextHistory = [...messages, { role: 'user', text: userText }];
+    setMessages(nextHistory);
     setInput('');
     setBusy(true);
     try {
-      let reply = 'I could not reach the model. Please check your API key.';
-      if (client) {
-        const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const prompt = `${systemPreamble}\nUser: ${userText}`;
-        const result = await model.generateContent(prompt);
-        const r = await result.response;
-        reply = (r && r.text) ? r.text() : 'Sorry, I could not formulate a response.';
-      }
+      const reply = await sendAyurvedaChat({
+        systemPrompt: systemPreamble,
+        messages: nextHistory,
+      });
       setMessages((m) => [...m, { role: 'bot', text: reply }]);
     } catch (err) {
-      setMessages((m) => [...m, { role: 'bot', text: 'There was an error generating a response.' }]);
+      const msg = err?.message === 'GROQ_API_KEY_MISSING'
+        ? 'I could not reach Groq. Please set REACT_APP_GROQ_API_KEY or sign in to use the backend AI proxy.'
+        : 'There was an error generating a response from Groq.';
+      setMessages((m) => [...m, { role: 'bot', text: msg }]);
     } finally {
       setBusy(false);
-      // Scroll to bottom
       setTimeout(() => {
         if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
       }, 30);
@@ -84,14 +68,14 @@ const Chatbot = () => {
       </div>
 
       {open && (
-  <div className={styles.panel}>
+        <div className={styles.panel}>
           <div className={styles.header}>
             <div className={styles.headerLeft}>
               <span className={styles.miniLogoWrap}>
                 <span className={styles.miniLogoRing} />
                 <img src="/images/logo.png" alt="AyurVarta" className={styles.miniLogoImg} />
               </span>
-              <div className={styles.title}>AyurVarta Chat</div>
+              <div className={styles.title}>AyurVarta Chat (Groq)</div>
             </div>
             <button className={styles.closeBtn} onClick={() => setOpen(false)} aria-label="Close chatbot">×</button>
           </div>
@@ -125,9 +109,9 @@ const Chatbot = () => {
             </button>
           </div>
 
-          {!process.env.REACT_APP_GEMINI_API_KEY && (
+          {!isGroqConfigured() && (
             <div className={styles.notice}>
-              Set REACT_APP_GEMINI_API_KEY in your environment to enable AI responses.
+              Set REACT_APP_GROQ_API_KEY in your environment to enable local Groq AI responses.
             </div>
           )}
         </div>
@@ -137,7 +121,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-
-// Commit on 2026-02-06 
-// Commit on 2026-02-06 
-// Commit on 2026-02-06 
