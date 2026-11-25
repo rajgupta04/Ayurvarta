@@ -48,18 +48,18 @@ The table below maps **every node in the reference diagram** to what AyurVarta a
 |---|---|---|---|---|
 | 1 | **Data Sources** (EHR, Trials, Guidelines) | Pre-populated Pinecone index `ayurvedic-foods-v2` — no visible ingestion pipeline, no Ayurvedic text corpus (Charaka Samhita, Ashtanga Hridayam, etc.) | 🔴 Critical | No ingestion code exists |
 | 2 | **PHI Scrubbing & DLP** | None. User assessment scores flow directly into the pipeline | 🟡 Medium | N/A — diet profiles aren't clinical PHI, but allergy/health data should still be handled carefully |
-| 3 | **Semantic Chunking & Tagging** | None. Food items appear to be pre-chunked as individual records in Pinecone (one vector per dish) | 🔴 Critical | No chunking code — [`logic.py`](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py) only queries, never ingests |
+| 3 | **Semantic Chunking & Tagging** | None. Food items appear to be pre-chunked as individual records in Pinecone (one vector per dish) | 🔴 Critical | No chunking code — `logic.py` (ackend/babayogi/logic.py) only queries, never ingests |
 | 4 | **Ontology (UMLS / SNOMED CT)** | **Completely absent.** No Ayurvedic ontology mapping (no Rasa ↔ Taste, no Guna ↔ Quality, no Dosha ↔ Food Property taxonomy) | 🔴 Critical | No ontology files or code |
 | 5 | **Knowledge Graph** | **Completely absent.** No graph database, no entity relationships between Doshas → Rasas → Foods → Seasons → Agni types | 🔴 Critical | No graph DB connection |
-| 6 | **Bio-Specific Embedding** | Uses generic `gemini-embedding-001` at 384 dimensions. Not fine-tuned on Ayurvedic or biomedical terminology | 🟠 High | [`logic.py` L31, L63-68](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L31) |
-| 7 | **Vector Database** | ✅ Pinecone `ayurvedic-foods-v2` — present and working | ✅ Present | [`logic.py` L36](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L36) |
-| 8 | **Query Router** | **Absent.** Single hardcoded query template, no intent classification, no routing between lexical/semantic/graph paths | 🔴 Critical | [`logic.py` L54-60](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L54-L60) |
-| 9 | **Hybrid Search (Vector + BM25)** | **Vector-only.** No BM25/lexical search component. Only metadata `$nin` filtering for allergies | 🟠 High | [`logic.py` L76-81](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L76-L81) |
+| 6 | **Bio-Specific Embedding** | Uses generic `gemini-embedding-001` at 384 dimensions. Not fine-tuned on Ayurvedic or biomedical terminology | 🟠 High | `logic.py` L31, L63-68 (ackend/babayogi/logic.py#L31) |
+| 7 | **Vector Database** | ✅ Pinecone `ayurvedic-foods-v2` — present and working | ✅ Present | `logic.py` L36 (ackend/babayogi/logic.py#L36) |
+| 8 | **Query Router** | **Absent.** Single hardcoded query template, no intent classification, no routing between lexical/semantic/graph paths | 🔴 Critical | `logic.py` L54-60 (ackend/babayogi/logic.py#L54-L60) |
+| 9 | **Hybrid Search (Vector + BM25)** | **Vector-only.** No BM25/lexical search component. Only metadata `$nin` filtering for allergies | 🟠 High | `logic.py` L76-81 (ackend/babayogi/logic.py#L76-L81) |
 | 10 | **Graph Traversal** | **Absent** (no KG exists) | 🔴 Critical | — |
-| 11 | **Cross-Encoder Reranker** | **Absent.** Raw Pinecone results (top-15) go straight into the prompt with zero reranking | 🟠 High | [`logic.py` L82](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L82) |
-| 12 | **Medical LLM Generation** | Gemini 2.5 Pro with a single-shot structured prompt. No multi-turn reasoning, no chain-of-thought | 🟡 Medium | [`logic.py` L89-99](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L89-L99) |
-| 13 | **Clinical Guardrails & CRAG** | **Completely absent.** No hallucination detection, no output validation against source facts, no citation linking, no contraindication checking | 🔴 Critical | [`logic.py` L94-99](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L94-L99) — bare `json.loads` with catch-all |
-| 14 | **Verified Output + Citations** | **No citations.** Response JSON has no provenance field linking recommendations back to source texts or retrieved food records | 🔴 Critical | The prompt in [`logic.py` L121-156](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L121-L156) never asks for citations |
+| 11 | **Cross-Encoder Reranker** | **Absent.** Raw Pinecone results (top-15) go straight into the prompt with zero reranking | 🟠 High | `logic.py` L82 (ackend/babayogi/logic.py#L82) |
+| 12 | **Medical LLM Generation** | Gemini 2.5 Pro with a single-shot structured prompt. No multi-turn reasoning, no chain-of-thought | 🟡 Medium | `logic.py` L89-99 (ackend/babayogi/logic.py#L89-L99) |
+| 13 | **Clinical Guardrails & CRAG** | **Completely absent.** No hallucination detection, no output validation against source facts, no citation linking, no contraindication checking | 🔴 Critical | `logic.py` L94-99 (ackend/babayogi/logic.py#L94-L99) — bare `json.loads` with catch-all |
+| 14 | **Verified Output + Citations** | **No citations.** Response JSON has no provenance field linking recommendations back to source texts or retrieved food records | 🔴 Critical | The prompt in `logic.py` L121-156 (ackend/babayogi/logic.py#L121-L156) never asks for citations |
 
 ---
 
@@ -142,7 +142,7 @@ Ayurvedic Texts (PDFs / structured data)
 ```
 
 #### 1.3 Add a Query Router
-The current code generates a single hardcoded search query at [`logic.py` L54-60](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L54-L60). Replace with:
+The current code generates a single hardcoded search query at `logic.py` L54-60 (ackend/babayogi/logic.py#L54-L60). Replace with:
 
 ```python
 class QueryRouter:
@@ -197,7 +197,7 @@ Current: Pure vector search with metadata `$nin` filtering.
 Pinecone supports sparse-dense hybrid vectors, or you can use **Elasticsearch alongside Pinecone** and merge results before reranking.
 
 #### 2.2 Cross-Encoder Reranker
-Current: Raw Pinecone `top_k=15` results are stuffed directly into the prompt at [`logic.py` L117-118](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L117-L118).
+Current: Raw Pinecone `top_k=15` results are stuffed directly into the prompt at `logic.py` L117-118 (ackend/babayogi/logic.py#L117-L118).
 
 **Add a reranker** between retrieval and generation:
 ```python
@@ -247,7 +247,7 @@ Modify the prompt schema to require citations:
 ```
 
 #### 3.3 Feedback Loop
-The existing `diet_logs` collection with `adherence` scoring ([`main.py` L678-693](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/main.py#L678-L693)) is an excellent foundation. Wire it back into the pipeline:
+The existing `diet_logs` collection with `adherence` scoring (`main.py` L678-693 (ackend/babayogi/main.py#L678-L693)) is an excellent foundation. Wire it back into the pipeline:
 - Low adherence scores on specific foods → de-rank those foods in future retrievals
 - High adherence + positive health outcomes → boost those food vectors
 

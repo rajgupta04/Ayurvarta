@@ -1,6 +1,6 @@
 # AyurVarta — Implementation Checklist & Progress Tracker
 
-> **Project**: AyurVarta (SIH 2025) — Personalized Ayurvedic Diet Generation RAG  
+> **Project**: AyurVarta — Personalized Ayurvedic Diet Generation RAG  
 > **Status**: In Active Development  
 > **Last Updated**: November 2026  
 

@@ -91,7 +91,7 @@
         <animate attributeName="opacity" values="1;0.45;1" dur="2s" repeatCount="indefinite" />
       </circle>
       <text x="99" y="63" class="mono" font-size="11.5" font-weight="600" letter-spacing="1.2" fill="#a7f3d0">
-        SIH 2025 · CLINICAL AYURVEDIC RAG
+        CLINICAL AYURVEDIC RAG · POLYGLOT
       </text>
     </g>
 

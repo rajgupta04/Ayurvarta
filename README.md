@@ -6,8 +6,6 @@
 
 <h3><strong>Where 5,000-Year-Old Ayurvedic Science Meets Ultra-Fast Groq AI &amp; Polyglot Microservices</strong></h3>
 
-*Submitted for **Smart India Hackathon (SIH 2025)***
-
 [![React 19](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](frontend)
 [![Node.js 20](https://img.shields.io/badge/Core_Backend-Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](backend)
 [![FastAPI ML](https://img.shields.io/badge/ML_Service-Python_FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](ml-service)
@@ -227,6 +225,6 @@ npm start            # Opens http://localhost:3000
 
 <div align="center">
 
-Built with classical precision and modern distributed engineering · **Team AyurVarta (SIH 2025)**
+Built with classical precision and modern distributed engineering · **Team AyurVarta**
 
 </div>

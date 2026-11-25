@@ -262,7 +262,7 @@ class AyurvedicOntology:
 - [x] `backend/babayogi/logic.py` integration — query expansion with pacifying Rasas/Gunas, grounded ontology prompt injection, and Viruddha safety check attachment
 
 ### Integration point (COMPLETED)
-[`logic.py`](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py) now initializes `AyurvedicOntology()`. It automatically resolves pacifying rasas/qualities to expand the Pinecone query, prompts the LLM with deterministic Ayurvedic facts, and runs `check_viruddha()` on all generated food recommendations to catch incompatibilities before returning to the client.
+`logic.py` (ackend/babayogi/logic.py) now initializes `AyurvedicOntology()`. It automatically resolves pacifying rasas/qualities to expand the Pinecone query, prompts the LLM with deterministic Ayurvedic facts, and runs `check_viruddha()` on all generated food recommendations to catch incompatibilities before returning to the client.
 
 ---
 
@@ -375,7 +375,7 @@ python -m ingestion.run_pipeline \
 - [ ] `.env.example` updated with any new keys
 
 ### Integration point
-[`logic.py` L36](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L36) currently connects to `ayurvedic-foods-v2`. After this phase the index name becomes configurable via `.env`, defaulting to `ayurvedic-foods-v3`.
+`logic.py` L36 (ackend/babayogi/logic.py#L36) currently connects to `ayurvedic-foods-v2`. After this phase the index name becomes configurable via `.env`, defaulting to `ayurvedic-foods-v3`.
 
 ---
 
@@ -383,7 +383,7 @@ python -m ingestion.run_pipeline \
 
 ### Task 2.1: Create `retrieval/query_router.py`
 
-Replace the single hardcoded query string ([`logic.py` L54-60](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L54-L60)) with an intent-aware router.
+Replace the single hardcoded query string (`logic.py` L54-60 (ackend/babayogi/logic.py#L54-L60)) with an intent-aware router.
 
 ```python
 from dataclasses import dataclass
@@ -595,7 +595,7 @@ class ReciprocalRankFusion:
 
 ### Task 2.6: Refactor `logic.py` to use the new retrieval pipeline
 
-Replace [`_retrieve_suitable_foods_from_pinecone`](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L39-L87) with:
+Replace `_retrieve_suitable_foods_from_pinecone` (ackend/babayogi/logic.py#L39-L87) with:
 
 ```python
 def _retrieve_foods(self, user_payload: dict) -> list[dict]:
@@ -638,7 +638,7 @@ def _retrieve_foods(self, user_payload: dict) -> list[dict]:
 ## Phase 3 — Guardrails & Generation (Sprint 5–6 · Week 9–12)
 
 > [!CAUTION]
-> This is the **safety-critical phase**. Currently, the LLM output at [`logic.py` L94-99](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L94-L99) is parsed with a bare `json.loads()` and returned with zero validation. A hallucinated recommendation could recommend an allergen.
+> This is the **safety-critical phase**. Currently, the LLM output at `logic.py` L94-99 (ackend/babayogi/logic.py#L94-L99) is parsed with a bare `json.loads()` and returned with zero validation. A hallucinated recommendation could recommend an allergen.
 
 ### Task 3.1: Create `guardrails/schema_validator.py`
 
@@ -828,7 +828,7 @@ class GuardrailsEngine:
 
 ### Task 3.7: Create `generation/prompt_builder.py`
 
-Replace the single monolithic prompt ([`logic.py` L121-156](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L121-L156)) with a chain-of-thought template:
+Replace the single monolithic prompt (`logic.py` L121-156 (ackend/babayogi/logic.py#L121-L156)) with a chain-of-thought template:
 
 ```python
 class PromptBuilder:
@@ -907,7 +907,7 @@ class DietPlanGenerator:
 
 ### Task 3.9: Refactor `logic.py` — Final Integration
 
-The current [`DietGenerationLogic`](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/logic.py#L17-L160) class becomes a thin orchestrator:
+The current `DietGenerationLogic` (ackend/babayogi/logic.py#L17-L160) class becomes a thin orchestrator:
 
 ```python
 class DietGenerationLogic:
@@ -945,14 +945,14 @@ class DietGenerationLogic:
 - [ ] `generation/generator.py` — multi-attempt generator with guardrail loop
 - [ ] `logic.py` fully refactored as thin orchestrator
 - [ ] `tests/test_guardrails.py` — tests for allergen, viruddha, CRAG checks
-- [ ] Frontend: add `citations` and `warnings` display to [`DietPlan.js`](file:///S:/Workplace/AyurVarta-SIH_2025/Ayurvarta/frontend/src/pages/DietPlan.js)
+- [ ] Frontend: add `citations` and `warnings` display to [`DietPlan.js`](../../frontend/src/pages/DietPlan.js)
 
 ---
 
 ## Phase 4 — Polish & Monitoring (Ongoing)
 
 ### Task 4.1: Feedback Loop (Week 10)
-Wire the existing [`/diet-logs`](file:///S:/Workplace/AyurVarta-SIH_2025/backend/babayogi/main.py#L678-L705) adherence data back into retrieval weighting. Low-adherence foods get de-ranked in future generations for that user.
+Wire the existing `/diet-logs` (ackend/babayogi/main.py#L678-L705) adherence data back into retrieval weighting. Low-adherence foods get de-ranked in future generations for that user.
 
 ### Task 4.2: Domain Embedding Fine-Tuning (Week 11)
 Collect query-food pairs from production logs. Fine-tune Gemini embeddings on Ayurvedic terminology pairs (e.g., "cooling Pitta food" ↔ foods tagged with `pacifies: pitta, virya: sheeta`).
@@ -1036,6 +1036,6 @@ flowchart LR
 
 > [!NOTE]
 > **Quick wins completed**:
-> - [x] Repaired [`App.test.js`](file:///S:/Workplace/AyurVarta-SIH_2025/Ayurvarta/frontend/src/App.test.js) (Jest passes cleanly)
-> - [x] Repaired syntax typo in [`firebase/config.js`](file:///S:/Workplace/AyurVarta-SIH_2025/Ayurvarta/frontend/src/firebase/config.js)
+> - [x] Repaired [`App.test.js`](../../frontend/src/App.test.js) (Jest passes cleanly)
+> - [x] Repaired syntax typo in [`firebase/config.js`](../../frontend/src/firebase/config.js)
 > - [x] Verified full frontend production build (`npm run build` succeeds)
