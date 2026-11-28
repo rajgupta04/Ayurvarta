@@ -15,7 +15,7 @@
 [![Redis](https://img.shields.io/badge/Cache_&_Queue-Redis_7-DC382D?style=for-the-badge&logo=redis&logoColor=white)](docs/services/database-redis.md)
 [![Docker](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](docker-compose.yml)
 
-[Architecture](#-distributed-polyglot-architecture) · [Why Polyglot?](#-why-polyglot-persistence) · [60s Patient Flow](#-the-60-second-patient-journey) · [Backend Plan](docs/architecture/backend-plan.md) · [Documentation](#-service-documentation-hub) · [Quick Start](#-quick-start)
+[Architecture](#-distributed-polyglot-architecture) · [Data Flow (DFD)](#-complete-end-to-end-data-flow-dfd) · [Why Polyglot?](#-why-polyglot-persistence) · [Backend Plan](docs/architecture/backend-plan.md) · [Documentation](#-service-documentation-hub) · [Quick Start](#-quick-start)
 
 </div>
 
@@ -85,23 +85,166 @@ Ayurvedic clinical data spans hierarchical questionnaires, dense vector embeddin
 
 ---
 
-## 🔄 The 60-Second Patient Journey
+## 🔀 Complete End-to-End Data Flow (DFD)
 
-```text
-  1. Diagnose          2. Dispatch           3. Retrieve           4. Guard & Synthesize      5. Track & Consult
- ┌─────────────┐     ┌──────────────┐     ┌────────────────┐     ┌─────────────────────┐     ┌──────────────────┐
- │ Prakriti,   │     │ Node.js API  │     │ Pinecone $nin  │     │ Groq Llama 3.3 70B  │     │ 1–5 Adherence    │
- │ Vikriti &   │ ──▶ │ checks Redis │ ──▶ │ strips patient │ ──▶ │ builds meal plan +  │ ──▶ │ Logs, PDF Export │
- │ Agni Quiz   │     │ Cohort Cache │     │ allergens &    │     │ Charaka 18 Viruddha │     │ & Agora Video    │
- │             │     │ & queues job │     │ matches Ritu   │     │ checks verify safety│     │ Tele-Consultation│
- └─────────────┘     └──────────────┘     └────────────────┘     └─────────────────────┘     └──────────────────┘
+### 1. Platform Data Flow Diagram (Level 1 — All Services & Polyglot Stores)
+
+The diagram below traces every data movement across external actors, microservices, AI inference, real-time telehealth, and polyglot persistence stores:
+
+```mermaid
+flowchart LR
+    Patient(["👤 Patient / User"])
+    Practitioner(["🩺 Ayurvedic Practitioner"])
+    GoogleOAuth(["🔐 Google OAuth"])
+    GroqCloud(["⚡ Groq LPU Cloud"])
+    AgoraCloud(["📹 Agora SD-RTN"])
+
+    subgraph Frontend["Presentation Layer — React 19 SPA"]
+        P0["0.1 Ambient UI, Quiz Engine & PDF Export"]
+        D4[("D4: Browser Storage & Optimized Media")]
+    end
+
+    subgraph CoreBackend["Core Backend & API Gateway — Node.js 20"]
+        P1["1.0 Auth, JWT & RBAC Guard"]
+        P2["2.0 Assessment & Profile Service"]
+        P3["3.0 Async Diet Job Orchestrator"]
+        P4["4.0 Adherence Log & Groq Chat Proxy"]
+        P5["5.0 Telehealth Token Authority"]
+    end
+
+    subgraph MLTier["Dedicated ML Service — Python FastAPI"]
+        P6["6.0 Query Router & BGE-Small Embedder"]
+        P7["7.0 Groq RAG & Charaka 18 Viruddha Guardrail"]
+    end
+
+    subgraph PolyglotDB["Polyglot Persistence Layer"]
+        D1[("D1: MongoDB 7.0+ (users, assessments, diet_plans, diet_logs, audit_logs, kg_triples)")]
+        D2[("D2: Redis 7.2+ (job:id, cohort:sha256, ratelimit, token:denylist)")]
+        D3[("D3: Pinecone / Qdrant (ayurvedic-foods-v2: 384-dim vectors)")]
+    end
+
+    Patient <-->|"UI Events, Quiz Inputs, Diet Charts, Chat"| P0
+    P0 <-->|"Poster / Faststart Video / Audio / Draft Cache"| D4
+
+    P0 -->|"Signup / Login / Google ID Token"| P1
+    P1 <-->|"Verify Google Token"| GoogleOAuth
+    P1 <-->|"User Records & Audit Logs"| D1
+    P1 <-->|"Rate Limits & Revoked JWT JTI"| D2
+    P1 -->|"JWT Access Token + User Session"| P0
+
+    P0 -->|"Prakriti, Vikriti & Agni Answers"| P2
+    P2 <-->|"Save & Fetch Latest Assessments"| D1
+
+    P0 -->|"Diet Preferences + Allergy Constraints"| P3
+    P3 <-->|"Lookup / Store cohort:sha256 & job:id"| D2
+    P3 -->|"Save Final Diet Plan Snapshot"| D1
+    P3 -->|"Internal Request + X-Internal-Service-Key"| P6
+
+    P6 -->|"384-dim Rasa/Guna Vector + $nin Allergy Filter"| D3
+    D3 -->|"Top-15 Candidate Foods & Classical Refs"| P7
+    P7 <-->|"Structured Prompt & Meal JSON (Llama 3.3 70B)"| GroqCloud
+    P7 -->|"Validated + Viruddha-Checked Diet Plan"| P3
+    P3 -->|"Polled Job Status & Final Meal Chart"| P0
+
+    P0 <-->|"Daily Meal Adherence (1-5) & AI Chat"| P4
+    P4 <-->|"Store / Query diet_logs"| D1
+    P4 <-->|"Server-Side Chat Completions"| GroqCloud
+
+    P0 -->|"Channel Request (Bearer JWT)"| P5
+    P5 -->|"Signed Agora RTC Token"| P0
+    P0 <-->|"Encrypted WebRTC Audio/Video"| AgoraCloud
+    AgoraCloud <-->|"Encrypted WebRTC Audio/Video"| Practitioner
 ```
 
-1. **Constitutional Profiling**: Users complete interactive assessments measuring baseline *Prakriti*, active *Vikriti*, and digestive *Agni*.
-2. **Instant Cohort Lookup**: The Node.js Core Backend hashes the user's dosha/Agni/season profile to check **Redis** for an already-validated cohort framework.
-3. **Allergy-Safe Vector Retrieval**: On a cache miss, the isolated Python ML service embeds the expanded *Shad-Rasa*/*Guna* query and queries **Pinecone/Qdrant**, filtering out registered allergens via metadata exclusions.
-4. **Groq Synthesis + *Viruddha Ahara* Guardrail**: **Groq LPU** (`llama-3.3-70b-versatile` / `openai/gpt-oss-120b`) generates structured daily meals, immediately audited against Charaka's 18 food incompatibility rules (e.g., no heated honey, no fish + dairy, no night curd).
-5. **Adherence & Telehealth**: Patients log daily meal adherence, export clean PDF diet charts (`html2canvas` + `jsPDF`), chat with the Groq Ayurvedic assistant, and join **Agora RTC** video consultations with practitioners.
+---
+
+### 2. Full Lifecycle Sequence Flow (Auth ➔ Diagnostics ➔ Diet RAG ➔ Adherence ➔ Telehealth)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Patient
+    participant FE as Frontend SPA (React)
+    participant BE as Core Backend (Node.js)
+    participant RD as Redis Cache/Queue
+    participant MG as MongoDB Atlas
+    participant ML as ML Service (FastAPI)
+    participant VDB as Pinecone / Qdrant
+    participant GQ as Groq LPU API
+    participant AG as Agora RTC
+
+    rect rgb(235, 248, 240)
+    note right of User: Phase A — Identity & Constitutional Diagnostics
+    User->>FE: Sign up / Login
+    FE->>BE: POST /auth/login (or /auth/google)
+    BE->>MG: Verify user & write audit_logs
+    BE-->>FE: JWT Token + User Profile
+    User->>FE: Complete Prakriti, Vikriti & Agni Quizzes
+    FE->>BE: POST /assessments (Bearer JWT)
+    BE->>MG: Persist scores in assessments
+    BE-->>FE: Confirmed Constitutional Baseline
+    end
+
+    rect rgb(236, 244, 255)
+    note right of User: Phase B — Cohort Cache & Clinical Diet RAG
+    User->>FE: Submit Diet Preferences & Allergies
+    FE->>BE: POST /diet-jobs/start
+    BE->>RD: Check cohort:{sha256}
+    alt Cohort Cache Hit
+        RD-->>BE: Cached Validated Plan
+        BE->>MG: Save snapshot to diet_plans
+        BE-->>FE: 200 { status: "completed", result }
+    else Cohort Cache Miss
+        BE->>RD: SET job:{id} -> status: "queued"
+        BE-->>FE: 202 { id, status: "queued" }
+        BE->>ML: Async POST /internal/v1/rag/generate-diet
+        ML->>ML: Expand query with Shad-Rasa & Vimshati Guna
+        ML->>VDB: Cosine Search (384-dim BGE) + $nin allergens
+        VDB-->>ML: Top-15 Ayurvedic Foods + Scripture Chunks
+        ML->>GQ: Synthesize Structured Plan (Llama 3.3 70B)
+        GQ-->>ML: Draft Meal Plan JSON
+        ML->>ML: Verify Charaka 18 Viruddha Ahara Rules
+        ML-->>BE: Validated Plan + Safety Checks
+        BE->>MG: Persist plan in diet_plans
+        BE->>RD: Cache cohort:{sha256} & mark job:{id} "completed"
+    end
+    loop Every 2.5s until completed
+        FE->>BE: GET /diet-jobs/{id}
+        BE->>RD: Read job:{id}
+        BE-->>FE: Diet Plan + Viruddha Alerts
+    end
+    end
+
+    rect rgb(255, 247, 232)
+    note right of User: Phase C — Adherence, AI Guidance & Telehealth
+    User->>FE: Log Meal Rating (1-5) & Notes
+    FE->>BE: POST /diet-logs
+    BE->>MG: Insert into diet_logs
+    User->>FE: Ask Ayurvedic AI Chatbot / Personal AI
+    FE->>BE: POST /api/v1/ai/chat
+    BE->>GQ: Proxy chat completion (server-side key)
+    GQ-->>BE: Personalized Dinacharya guidance
+    BE-->>FE: AI Reply
+    User->>FE: Join Practitioner Video Consultation
+    FE->>BE: POST /api/v1/telehealth/token
+    BE-->>FE: Signed Agora RTC Token
+    FE->>AG: Connect WebRTC Audio/Video Stream
+    end
+```
+
+---
+
+### 3. Data Flow Inventory Matrix
+
+| Flow | Source ➔ Destination | Payload & Schema | Backing Store | Transport & Security |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth & Session** | Frontend ➔ Backend ➔ MongoDB/Redis | Credentials / Google ID Token ➔ JWT + Refresh Token | `users`, `refresh_tokens`, `audit_logs`, `token:denylist` | HTTPS, bcrypt (12), JWT + `X-Request-Id` |
+| **Assessments** | Frontend ➔ Backend ➔ MongoDB | `{ type, scores, schema, disease, capturedAt }` | `assessments` (`userId` + `type` compound index) | HTTPS + Bearer JWT, IDOR ownership check |
+| **Diet Plan RAG** | Frontend ➔ Backend ➔ ML ➔ VectorDB/Groq | Prakriti/Vikriti/Agni + Allergies + Season ➔ Meal Chart | `job:{id}`, `cohort:{sha256}`, `ayurvedic-foods-v2`, `diet_plans` | Internal REST + `X-Internal-Service-Key` |
+| **Meal Adherence** | Frontend ➔ Backend ➔ MongoDB | `{ mealType, mealName, notes, adherence: 1..5 }` | `diet_logs` | HTTPS + Bearer JWT |
+| **Groq AI Assistant** | Frontend ➔ Backend ➔ Groq Cloud | Chat history + Dosha context ➔ Markdown guidance | Ephemeral / Stateless | HTTPS + Bearer JWT (server-side `GROQ_API_KEY`) |
+| **Tele-Consultation** | Frontend ➔ Backend ➔ Agora SD-RTN | Channel name ➔ Signed RTC Token ➔ WebRTC media stream | Ephemeral RTC Session | Server-signed Agora App Certificate + DTLS-SRTP |
+| **Ambient Hero Media** | Public Assets / CDN ➔ Browser | `bgPoster.webp` (`385 KB`), faststart `bgVideo.mp4` (`77.4 MB`), `BgMusic.mp3` | Browser Disk Cache + Nginx `immutable` | HTTP Byte-Range (`Accept-Ranges: bytes`) |
 
 ---
 
@@ -139,8 +282,10 @@ Explore dedicated specifications, schemas, contracts, and engineering plans:
 ```text
 Ayurvarta/
 ├── frontend/                  # 🌐 React 19 Client SPA (Docker + Nginx ready)
+│   ├── public/                #    Faststart video, poster, audio, Migano font & catalogs
 │   ├── src/api/               #    REST clients (auth, assessments, diet jobs, Groq AI)
-│   ├── src/pages/             #    Assessments, Dashboard, DietPlan, PersonalAI, VideoConsult
+│   ├── src/components/        #    FoggyGlassOverlay, LiquidGlassTitle, Chatbot, Modals
+│   ├── src/pages/             #    Home, Assessments, Dashboard, DietPlan, VideoConsult
 │   └── Dockerfile             #    Multi-stage Node 20 -> Nginx Alpine build
 ├── backend/                   # ⚡ Node.js 20 Core Backend & API Gateway
 │   ├── src/server.js          #    Express entry, X-Request-Id, /health & /ready probes
@@ -150,7 +295,10 @@ Ayurvarta/
 │   ├── app.py                 #    Internal RAG endpoint (/internal/v1/rag/generate-diet)
 │   ├── config.py              #    Groq, Pinecone & BGE-Small settings
 │   └── Dockerfile             #    Python 3.11-slim container
-├── docs/                      # 📚 Centralized architecture, service docs & backend plan
+├── docs/                      # 📚 Centralized architecture, assets, service docs & plans
+│   ├── assets/                #    Animated SVG hero banner (ayurvarta-hero.svg)
+│   ├── architecture/          #    Overview, backend-plan, gap-analysis, implementation-plan
+│   └── services/              #    Individual service & polyglot database specs
 ├── docker-compose.yml         # 🐳 Full polyglot stack (MongoDB, Redis, Qdrant, 3 services)
 ├── PROJECT_RULES.md           # 📜 Persistent rules & API contracts
 └── Vibe_Rules.md              # ✅ Microservice engineering master checklist
